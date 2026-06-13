@@ -1,0 +1,76 @@
+---
+const RATE_PER_LOT = 8;
+const DEFAULT_CLIENTS = 0;
+const DEFAULT_VOLUME = 0;
+const DEFAULT_TOTAL = (DEFAULT_CLIENTS * DEFAULT_VOLUME * RATE_PER_LOT).toFixed(2);
+---
+
+<section class="ib-calc">
+  <div class="ib-calc__header">
+    <h3 class="ib-calc__title">Calculá tu ingreso estimado como IB</h3>
+    <p class="ib-calc__subtitle">
+      Estimá tus ingresos mensuales según el volumen de trading de tu red. Cálculo basado
+      en las condiciones de un contrato estándar — las condiciones finales pueden
+      negociarse según el volumen de tu red.
+    </p>
+  </div>
+
+  <div class="ib-calc__body">
+    <div class="ib-calc__inputs">
+      <div class="ib-calc__field">
+        <label for="ib-clients">
+          Clientes referidos activos: <strong id="ib-clients-value">{DEFAULT_CLIENTS}</strong> traders
+        </label>
+        <input type="range" id="ib-clients" min="0" max="50" step="1" value={DEFAULT_CLIENTS} />
+      </div>
+
+      <div class="ib-calc__field">
+        <label for="ib-volume">
+          Volumen de trading promedio por trader: <strong id="ib-volume-value">{DEFAULT_VOLUME}</strong> lotes/mes
+        </label>
+        <input type="range" id="ib-volume" min="0" max="50" step="1" value={DEFAULT_VOLUME} />
+      </div>
+
+      <p class="ib-calc__note">
+        *Ten en cuenta que los siguientes cálculos son preliminares y se basan en el trading de un solo
+        instrumento (EUR/USD), sirviendo únicamente como referencia y no representando las ganancias finales.
+      </p>
+    </div>
+
+    <div class="ib-calc__result">
+      <span class="ib-calc__result-label">Tu ingreso mensual estimado</span>
+      <span class="ib-calc__result-value">$<span id="ib-result">{DEFAULT_TOTAL}</span></span>
+      <a href="/#agendar" class="btn btn-primary">Hablar con un manager</a>
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ RATE_PER_LOT }}>
+  const clientsInput = document.getElementById('ib-clients');
+  const volumeInput = document.getElementById('ib-volume');
+  const clientsValue = document.getElementById('ib-clients-value');
+  const volumeValue = document.getElementById('ib-volume-value');
+  const result = document.getElementById('ib-result');
+
+  function updateTrackFill(input) {
+    const min = Number(input.min) || 0;
+    const max = Number(input.max) || 100;
+    const pct = ((Number(input.value) - min) / (max - min)) * 100;
+    input.style.background = `linear-gradient(to right, var(--accent) ${pct}%, var(--bg-surf) ${pct}%)`;
+  }
+
+  function update() {
+    const clients = Number(clientsInput.value);
+    const volume = Number(volumeInput.value);
+    clientsValue.textContent = String(clients);
+    volumeValue.textContent = String(volume);
+    const total = clients * volume * RATE_PER_LOT;
+    result.textContent = total.toFixed(2);
+    updateTrackFill(clientsInput);
+    updateTrackFill(volumeInput);
+  }
+
+  clientsInput.addEventListener('input', update);
+  volumeInput.addEventListener('input', update);
+  update();
+</script>

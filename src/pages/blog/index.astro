@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const posts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const dateFormatter = new Intl.DateTimeFormat('es-419', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<BlogLayout
+  title="Blog | El Tico FX — Trading, regulación y oportunidades en VT Markets"
+  description="Artículos sobre trading, regulación, programas de Introducing Broker y oportunidades para operar con VT Markets desde Latinoamérica."
+>
+  <section class="blog-hero">
+    <div class="container">
+      <span class="section-label">Blog</span>
+      <h1 class="blog-hero__title">Recursos para traders, IBs e inversores en LATAM</h1>
+      <p class="blog-hero__subtitle">
+        Guías prácticas sobre regulación, cuentas, plataformas y programas de partnership con VT Markets.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="blog-grid">
+        {posts.map((post) => (
+          <a href={`/blog/${post.id}/`} class="blog-card">
+            <div class="blog-card__date">{dateFormatter.format(post.data.pubDate)}</div>
+            <h2 class="blog-card__title">{post.data.title}</h2>
+            <p class="blog-card__description">{post.data.description}</p>
+            <div class="blog-card__tags">
+              {post.data.tags.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BlogLayout>

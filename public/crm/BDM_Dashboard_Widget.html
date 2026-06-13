@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Tico FX — BDM Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* ── DARK MODE (default) ── */
+:root {
+  --bg:        #070910;
+  --bg-card:   #0e1117;
+  --bg-surf:   #131820;
+  --bg-hover:  #1a2130;
+  --border:    rgba(255,255,255,0.06);
+  --border-md: rgba(255,255,255,0.10);
+  --accent:    #00d4aa;
+  --blue:      #0ea5e9;
+  --amber:     #f59e0b;
+  --pink:      #ec4899;
+  --purple:    #a855f7;
+  --t1:        #f0f4f8;
+  --t2:        #94a3b8;
+  --t3:        #475569;
+  --r:         12px;
+  --r-sm:      8px;
+  --seg-ib:       #38bdf8;
+  --seg-academia: #22c55e;
+  --seg-inv:      #f97316;
+  --seg-retail:   #a855f7;
+  --shadow-card: 0 2px 8px rgba(0,0,0,.4);
+  --mo-bg: rgba(0,0,0,.72);
+}
+
+/* ── LIGHT MODE ── */
+body.light {
+  --bg:        #f0f4f8;
+  --bg-card:   #ffffff;
+  --bg-surf:   #f8fafc;
+  --bg-hover:  #e8f0fe;
+  --border:    rgba(0,0,0,0.08);
+  --border-md: rgba(0,0,0,0.14);
+  --t1:        #0f172a;
+  --t2:        #475569;
+  --t3:        #94a3b8;
+  --shadow-card: 0 2px 10px rgba(0,0,0,.08);
+  --mo-bg: rgba(0,0,0,.45);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;padding:0;font-size:15px;transition:background .25s,color .25s}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* WIDGET */
+.w{width:100%;min-height:100vh;background:var(--bg-card);border-radius:0;border:none;overflow:hidden;transition:background .25s}
+
+/* HEADER */
+.wh{padding:22px 36px 0;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+.logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--t1)}
+.logo-sub{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--t3);margin-top:2px}
+.wh-right{display:flex;align-items:center;gap:14px}
+.wdate{font-size:13px;color:var(--t3)}
+
+/* THEME TOGGLE */
+.theme-btn{background:var(--bg-surf);border:1px solid var(--border);border-radius:100px;padding:6px 12px;cursor:pointer;display:flex;align-items:center;gap:6px;color:var(--t2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.theme-btn svg{width:14px;height:14px;flex-shrink:0;fill:currentColor}
+
+/* TABS */
+.tabs{display:flex;padding:16px 36px 0;border-bottom:1px solid var(--border);gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:none;border:none;color:var(--t3);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;padding:11px 18px;cursor:pointer;position:relative;white-space:nowrap;transition:color .2s;letter-spacing:.02em}
+.tab:hover{color:var(--t2)}
+.tab.on{color:var(--t1)}
+.tab.on::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--accent);border-radius:2px 2px 0 0}
+
+/* CONTENT */
+.tc{padding:28px 36px 36px}
+.panel{display:none}
+.panel.on{display:block;animation:fi .22s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* GRID HELPERS */
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.g2-3{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:18px}
+
+/* CARDS */
+.card{background:var(--bg-surf);border:1px solid var(--border);border-radius:var(--r);padding:20px;transition:background .25s,border-color .25s}
+.card-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--t3);margin-bottom:15px}
+
+/* METRIC CARDS */
+.mc{position:relative;overflow:hidden}
+.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--mc-c,var(--accent))}
+.mc-label{font-size:13px;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;font-weight:500}
+.mc-val{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:800;line-height:1;margin-bottom:5px;color:var(--t1)}
+.mc-delta{font-size:13px;color:var(--t3)}
+.delta-up{color:var(--accent)}
+.delta-down{color:var(--pink)}
+
+/* FUNNEL */
+.frow{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.flabel{font-size:14px;color:var(--t2);width:100px;flex-shrink:0}
+.fbar-w{flex:1;background:rgba(127,127,127,.1);border-radius:100px;height:7px;overflow:hidden}
+.fbar{height:100%;border-radius:100px;background:var(--fb-c,var(--accent));transition:width .8s cubic-bezier(.4,0,.2,1)}
+.fpct{font-size:11px;color:var(--t3);width:30px;text-align:right;flex-shrink:0}
+
+/* ACTIVITIES */
+.act{display:flex;align-items:flex-start;gap:9px;padding:10px 0;border-bottom:1px solid var(--border)}
+.act:last-child{border:none}
+.act-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.act-text{flex:1;font-size:14px;color:var(--t2);line-height:1.45}
+.badge{font-size:11px;padding:3px 9px;border-radius:100px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;flex-shrink:0}
+.b-urg{background:rgba(236,72,153,.15);color:var(--pink)}
+.b-pend{background:rgba(245,158,11,.15);color:var(--amber)}
+.b-done{background:rgba(0,212,170,.15);color:var(--accent)}
+.b-info{background:rgba(14,165,233,.15);color:var(--blue)}
+
+/* QUICK ACTIONS */
+.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.qa-btn{background:var(--bg-surf);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 16px;cursor:pointer;text-align:left;transition:all .2s;color:var(--t2)}
+.qa-btn:hover{border-color:var(--qa-c,var(--accent));background:var(--bg-hover);color:var(--t1)}
+.qa-icon{font-size:15px;font-weight:700;font-family:'Syne',sans-serif;color:var(--qa-c,var(--accent));display:block;margin-bottom:6px;letter-spacing:.05em}
+.qa-label{font-size:14px;font-weight:600;display:block;font-family:'DM Sans',sans-serif}
+.qa-desc{font-size:13px;color:var(--t3);margin-top:3px}
+
+/* SEGMENT CARDS */
+.sg-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:20px}
+.sg{background:var(--bg-surf);border:1px solid var(--border);border-radius:var(--r);padding:17px;position:relative;overflow:hidden;transition:border-color .2s}
+.sg::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--sc)}
+.sg:hover{border-color:var(--sc-b)}
+.sg-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:9px}
+.sg-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--t1)}
+.sg-pri{font-size:9px;font-weight:700;padding:3px 8px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase}
+.pri-hi{background:rgba(236,72,153,.15);color:var(--pink)}
+.pri-md{background:rgba(245,158,11,.15);color:var(--amber)}
+.pri-lo{background:rgba(14,165,233,.15);color:var(--blue)}
+.sg-desc{font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:11px}
+.sg-plabel{font-size:10px;color:var(--t3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}
+.sg-pbar{background:rgba(127,127,127,.1);border-radius:100px;height:4px;margin-bottom:11px;overflow:hidden}
+.sg-pfill{height:100%;border-radius:100px;background:var(--sc);transition:width .8s}
+.sg-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:13px}
+.pill{font-size:10px;padding:3px 8px;border-radius:100px;border:1px solid var(--border-md);color:var(--t2);background:var(--bg-hover)}
+.sg-btn{width:100%;background:transparent;border:1px solid var(--sc);color:var(--sc);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;padding:8px;border-radius:var(--r-sm);cursor:pointer;transition:all .2s;letter-spacing:.03em}
+.sg-btn:hover{background:rgba(127,127,127,.08)}
+
+/* CHANNEL TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;padding:9px 13px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);border-bottom:1px solid var(--border);font-weight:600}
+.tbl td{padding:11px 13px;border-bottom:1px solid var(--border);color:var(--t2);line-height:1.4}
+.tbl tr:last-child td{border:none}
+.tbl tr:hover td{background:var(--bg-hover)}
+
+/* KANBAN */
+.kb{display:flex;gap:14px;overflow-x:auto;padding-bottom:6px;margin-bottom:20px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.kc{min-width:210px;flex-shrink:0}
+.kc-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.kc-name{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--t3)}
+.kc-cnt{font-size:12px;background:var(--bg-hover);padding:3px 9px;border-radius:100px;color:var(--t3)}
+.kcard{background:var(--bg-surf);border:1px solid var(--border);border-radius:var(--r-sm);padding:13px;margin-bottom:9px;transition:all .2s;cursor:pointer;border-left:3px solid var(--kcard-seg,var(--border-md))}
+.kcard:hover{border-color:var(--border-md);border-left-color:var(--kcard-seg,var(--border-md));transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.kcard-name{font-size:14px;font-weight:600;color:var(--t1);margin-bottom:3px;line-height:1.3}
+.kcard-meta{font-size:13px;color:var(--t3);margin-bottom:3px}
+.kcard-email{font-size:12px;color:var(--t3);margin-bottom:2px;word-break:break-all}
+.kcard-social{font-size:12px;color:var(--t2);margin-bottom:0}
+.kcard-badges{display:flex;gap:5px;margin-top:9px;flex-wrap:wrap}
+.kb-tag{font-size:11px;padding:3px 8px;border-radius:100px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+
+/* FORM */
+.form{background:var(--bg-surf);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.form-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);margin-bottom:15px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px}
+.fgrp{display:flex;flex-direction:column;gap:5px}
+.fgrp.full{grid-column:1/-1}
+.flbl{font-size:12px;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;font-weight:500}
+.finp,.fsel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 13px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s;width:100%}
+.finp:focus,.fsel:focus{border-color:var(--accent)}
+.fsel option{background:var(--bg-card);color:var(--t1)}
+.f-actions{display:flex;gap:11px;margin-top:5px}
+.btn-p{background:var(--accent);color:#070910;border:none;padding:11px 22px;border-radius:var(--r-sm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.03em}
+.btn-p:hover{background:#00f0c0;transform:translateY(-1px)}
+.btn-s{background:transparent;color:var(--accent);border:1px solid var(--accent);padding:11px 22px;border-radius:var(--r-sm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.03em}
+.btn-s:hover{background:rgba(0,212,170,.08)}
+.btn-ghost{background:transparent;color:var(--t3);border:1px solid var(--border);padding:9px 16px;border-radius:var(--r-sm);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
+.btn-ghost:hover{color:var(--t1);border-color:var(--border-md)}
+
+/* PLAYBOOK */
+.wk{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:18px}
+.day{background:var(--bg-surf);border:1px solid var(--border);border-radius:var(--r-sm);padding:11px}
+.day-n{font-family:'Syne',sans-serif;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:7px}
+.day-a{font-size:11px;color:var(--t2);line-height:1.5;margin-bottom:3px;padding-left:7px;border-left:2px solid var(--border)}
+
+.msg-item{padding:9px 13px;border-radius:var(--r-sm);border-left:3px solid var(--mi-c,var(--accent));background:var(--bg-hover);margin-bottom:7px;font-size:12px;color:var(--t2);line-height:1.5}
+.msg-seg{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--mi-c,var(--accent));margin-bottom:2px}
+
+.obj{padding:9px 0;border-bottom:1px solid var(--border);display:flex;gap:11px}
+.obj:last-child{border:none}
+.obj-n{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--t3);flex-shrink:0;line-height:1;margin-top:2px}
+.obj-q{font-size:12px;font-weight:600;color:var(--t1);margin-bottom:2px}
+.obj-a{font-size:12px;color:var(--t2);line-height:1.5}
+
+.cg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.cg-btn{background:var(--bg-surf);border:1px solid var(--border);border-radius:var(--r-sm);padding:13px;cursor:pointer;text-align:center;transition:all .2s;color:var(--cg-c,var(--accent))}
+.cg-btn:hover{border-color:var(--cg-c,var(--accent));background:var(--bg-hover)}
+.cg-ico{font-size:16px;font-weight:800;font-family:'Syne',sans-serif;margin-bottom:5px;display:block}
+.cg-lbl{font-size:11px;font-weight:600;display:block;font-family:'DM Sans',sans-serif;line-height:1.3;color:var(--t2)}
+
+/* KPIs */
+.kpi-g{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:18px}
+.kpi-c{background:var(--bg-surf);border:1px solid var(--border);border-radius:var(--r);padding:17px}
+.kpi-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);margin-bottom:11px;font-weight:600}
+.kpi-val{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:800;color:var(--t1);margin-bottom:8px;line-height:1}
+.pbar{background:rgba(127,127,127,.1);border-radius:100px;height:5px;overflow:hidden;margin-bottom:5px}
+.pfill{height:100%;border-radius:100px;background:var(--pb-c,var(--accent));transition:width 1s}
+.plabels{font-size:11px;color:var(--t3);display:flex;justify-content:space-between}
+
+.bn{background:rgba(236,72,153,.05);border:1px solid rgba(236,72,153,.2);border-radius:var(--r);padding:15px;margin-bottom:15px}
+.bn-t{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--pink);margin-bottom:7px}
+.bn-body{font-size:13px;color:var(--t2);line-height:1.6}
+
+.act-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.ar-btn{background:var(--bg-surf);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;cursor:pointer;text-align:left;transition:all .2s;color:var(--t2)}
+.ar-btn:hover{border-color:var(--accent);color:var(--t1)}
+.ar-lbl{font-size:12px;font-weight:700;display:block;margin-bottom:2px;color:var(--accent);font-family:'DM Sans',sans-serif}
+.ar-desc{font-size:11px;color:var(--t3)}
+
+.dot-seg{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:5px}
+.trend-up{color:var(--accent)}
+.trend-dn{color:var(--pink)}
+
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:var(--mo-bg);z-index:9999;backdrop-filter:blur(5px);align-items:center;justify-content:center}
+.mo.open{display:flex}
+.mo-box{background:var(--bg-card);border:1px solid rgba(0,212,170,.2);border-radius:16px;padding:26px;max-width:520px;width:92%;max-height:80vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.6),0 0 40px rgba(0,212,170,.04)}
+.mo-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.mo-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--accent)}
+.mo-close{background:none;border:none;color:var(--t3);font-size:18px;cursor:pointer;transition:color .2s;padding:4px}
+.mo-close:hover{color:var(--t1)}
+.mo-tag{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:9px;font-weight:600}
+.mo-body{background:var(--bg-surf);border:1px solid var(--border);border-radius:var(--r-sm);padding:15px;font-size:13px;color:var(--t2);line-height:1.75;white-space:pre-wrap;font-family:'DM Sans',sans-serif}
+.mo-actions{display:flex;gap:9px;margin-top:14px}
+.kc.drag-over{background:rgba(0,212,170,.07);outline:1.5px dashed var(--accent)}
+.kcard.dragging{opacity:.4}
+
+/* ── CORREOS section ── */
+.correos-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.correos-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.correos-filter{background:var(--bg-surf);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 12px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.correos-filter:focus{border-color:var(--accent)}
+.correos-filter option{background:var(--bg-card);color:var(--t1)}
+
+.correos-table-wrap{overflow-x:auto}
+.correos-tbl{width:100%;border-collapse:collapse;font-size:14px}
+.correos-tbl th{text-align:left;padding:9px 13px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);border-bottom:1px solid var(--border);font-weight:600}
+.correos-tbl th:first-child{width:40px}
+.correos-tbl td{padding:10px 13px;border-bottom:1px solid var(--border);color:var(--t2);line-height:1.4}
+.correos-tbl tr:last-child td{border:none}
+.correos-tbl tr:hover td{background:var(--bg-hover)}
+.correos-tbl input[type="checkbox"]{accent-color:var(--accent);width:15px;height:15px;cursor:pointer}
+
+.seg-badge{font-size:11px;padding:3px 9px;border-radius:100px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+
+.correos-sel-bar{background:rgba(0,212,170,.07);border:1px solid rgba(0,212,170,.25);border-radius:var(--r-sm);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.correos-sel-bar span{font-size:13px;color:var(--accent);font-weight:600}
+.correos-empty{padding:40px;text-align:center;color:var(--t3);font-size:14px;font-style:italic}
+
+/* ── REUNIONES section ── */
+.reun-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.reun-filters{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.reun-filter{background:var(--bg-surf);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 12px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.reun-filter:focus{border-color:var(--accent)}
+.reun-filter option{background:var(--bg-card);color:var(--t1)}
+
+.reun-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+.reun-sc{background:var(--bg-surf);border:1px solid var(--border);border-radius:var(--r);padding:16px;position:relative;overflow:hidden}
+.reun-sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--rsc-c,var(--accent))}
+.reun-sc-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);margin-bottom:8px;font-weight:600}
+.reun-sc-val{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:800;color:var(--t1);line-height:1}
+
+.reun-table-wrap{overflow-x:auto}
+.reun-tbl{width:100%;border-collapse:collapse;font-size:14px}
+.reun-tbl th{text-align:left;padding:9px 13px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap}
+.reun-tbl td{padding:10px 13px;border-bottom:1px solid var(--border);color:var(--t2);line-height:1.4}
+.reun-tbl tr:last-child td{border:none}
+.reun-tbl tr:hover td{background:var(--bg-hover)}
+
+.reun-empty{padding:40px;text-align:center;color:var(--t3);font-size:14px;font-style:italic}
+
+.reun-status-badge{font-size:11px;padding:3px 9px;border-radius:100px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.rs-pendiente{background:rgba(245,158,11,.12);color:var(--amber)}
+.rs-confirmada{background:rgba(14,165,233,.12);color:var(--blue)}
+.rs-realizada{background:rgba(0,212,170,.12);color:var(--accent)}
+.rs-cancelada{background:rgba(236,72,153,.12);color:var(--pink)}
+
+.reun-tipo-badge{font-size:11px;padding:3px 8px;border-radius:100px;border:1px solid var(--border-md);color:var(--t2);background:var(--bg-hover);white-space:nowrap}
+
+.reun-act-btn{background:none;border:none;color:var(--t3);cursor:pointer;font-size:12px;padding:3px 7px;border-radius:4px;transition:color .2s;font-family:'DM Sans',sans-serif;font-weight:500}
+.reun-act-btn:hover{color:var(--t1)}
+.reun-act-btn.del:hover{color:var(--pink)}
+
+@media(max-width:700px){.reun-summary{grid-template-columns:1fr 1fr}}
+
+/* ── LOGOUT BUTTON ── */
+.logout-btn{background:var(--bg-surf);border:1px solid var(--border);border-radius:100px;padding:6px 14px;cursor:pointer;display:flex;align-items:center;gap:6px;color:var(--t2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;transition:all .2s}
+.logout-btn:hover{border-color:rgba(248,113,113,.4);color:#f87171;background:rgba(248,113,113,.08)}
+.logout-btn svg{width:14px;height:14px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── Auth gate (Supabase Auth) ── */
+#auth-gate{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+.ag-card{background:var(--bg-card);border:1px solid var(--border-md);border-radius:var(--r);padding:38px 32px;width:100%;max-width:380px;box-shadow:var(--shadow-card)}
+.ag-logo{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.ag-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+.ag-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--t1)}
+.ag-sub{font-size:12px;color:var(--t2);margin-top:2px}
+.ag-field{margin-bottom:14px}
+.ag-field label{display:block;font-size:12px;color:var(--t2);margin-bottom:6px;font-weight:500}
+.ag-field input{width:100%;box-sizing:border-box;background:var(--bg-surf);border:1px solid var(--border-md);border-radius:var(--r-sm);padding:11px 12px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s}
+.ag-field input:focus{border-color:var(--accent)}
+#auth-error{display:none;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:#f87171;border-radius:var(--r-sm);padding:9px 12px;font-size:13px;margin-bottom:14px}
+#auth-btn{width:100%;background:var(--accent);color:#06241d;border:none;border-radius:var(--r-sm);padding:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .2s}
+#auth-btn:hover{opacity:.9}
+#auth-btn:disabled{opacity:.5;cursor:wait}
+</style>
+</head>
+<body>
+
+<!-- ── AUTH GATE (Supabase Auth) ─────────────────────────────────── -->
+<div id="auth-gate">
+  <div class="ag-card">
+    <div class="ag-logo">
+      <div class="ag-dot"></div>
+      <div>
+        <div class="ag-title">El Tico FX — CRM</div>
+        <div class="ag-sub">Acceso restringido. Solo personal autorizado.</div>
+      </div>
+    </div>
+    <form id="auth-form" autocomplete="off">
+      <div class="ag-field">
+        <label for="auth-email">Email</label>
+        <input type="email" id="auth-email" placeholder="bdm@..." required autocomplete="username" />
+      </div>
+      <div class="ag-field">
+        <label for="auth-pass">Contrase&#241;a</label>
+        <input type="password" id="auth-pass" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" required autocomplete="current-password" />
+      </div>
+      <div id="auth-error" role="alert"></div>
+      <button type="submit" id="auth-btn">Ingresar</button>
+    </form>
+  </div>
+</div>
+
+<div class="w">
+
+  <!-- Header -->
+  <div class="wh">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <div>
+        <div class="logo-text">El Tico FX</div>
+        <div class="logo-sub">BDM Intelligence System</div>
+      </div>
+    </div>
+    <div class="wh-right">
+      <div class="wdate" id="wdate"></div>
+      <button class="theme-btn" id="theme-toggle" onclick="toggleTheme()">
+        <svg id="theme-icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none"><path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0-13a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0V5a1 1 0 0 1 1-1zm0 14a1 1 0 0 1 1 1v1a1 1 0 0 1-2 0v-1a1 1 0 0 1 1-1zm7.07-11.07a1 1 0 0 1 0 1.41l-.71.71a1 1 0 1 1-1.41-1.41l.71-.71a1 1 0 0 1 1.41 0zM6.34 17.66a1 1 0 0 1 0 1.41l-.71.71a1 1 0 0 1-1.41-1.41l.71-.71a1 1 0 0 1 1.41 0zM21 11h-1a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2zM4 11H3a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2zm14.36 5.64a1 1 0 0 1 1.41 0l.71.71a1 1 0 0 1-1.41 1.41l-.71-.71a1 1 0 0 1 0-1.41zM4.93 6.34a1 1 0 0 1 1.41 0l.71.71A1 1 0 0 1 5.64 8.46l-.71-.71a1 1 0 0 1 0-1.41z"/></svg>
+        <svg id="theme-icon-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 0 1 11.21 3a7 7 0 1 0 9.79 9.79z"/></svg>
+        <span id="theme-label">Modo Claro</span>
+      </button>
+      <button class="logout-btn" id="crm-logout-btn" onclick="crmLogout()" title="Cerrar sesi&#243;n">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        <span>Salir</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <nav class="tabs">
+    <button class="tab on" data-t="dashboard">Dashboard</button>
+    <button class="tab" data-t="segmentos">Segmentos</button>
+    <button class="tab" data-t="pipeline">Pipeline</button>
+    <button class="tab" data-t="playbook">Playbook</button>
+    <button class="tab" data-t="kpis">KPIs</button>
+    <button class="tab" data-t="correos">Correos</button>
+    <button class="tab" data-t="reuniones">Reuniones</button>
+  </nav>
+
+  <div class="tc">
+
+    <!-- ═══════════ DASHBOARD ═══════════ -->
+    <div class="panel on" id="p-dashboard">
+      <div class="g4">
+        <div class="card mc" style="--mc-c:var(--accent)">
+          <div class="mc-label">Prospectos Activos</div>
+          <div class="mc-val" id="dash-activos">0</div>
+          <div class="mc-delta" id="dash-activos-delta">Sin prospectos aun</div>
+        </div>
+        <div class="card mc" style="--mc-c:var(--blue)">
+          <div class="mc-label">En Negociacion</div>
+          <div class="mc-val" id="dash-negoc">0</div>
+          <div class="mc-delta" id="dash-negoc-delta">Sin negociaciones</div>
+        </div>
+        <div class="card mc" style="--mc-c:var(--amber)">
+          <div class="mc-label">Cierres del Mes</div>
+          <div class="mc-val" id="dash-cerrados">0</div>
+          <div class="mc-delta">Meta: 8</div>
+        </div>
+        <div class="card mc" style="--mc-c:var(--pink)">
+          <div class="mc-label">Capital Captado</div>
+          <div class="mc-val" style="font-size:21px">$0</div>
+          <div class="mc-delta">0% de meta</div>
+        </div>
+      </div>
+
+      <div class="g2">
+        <div class="card">
+          <div class="card-title">Embudo de Conversion</div>
+          <div id="funnel-rows">
+            <div class="frow"><div class="flabel">Prospectos</div><div class="fbar-w"><div class="fbar" id="fb-0" style="--fb-c:var(--accent);width:0%"></div></div><div class="fpct" id="fp-0">0</div></div>
+            <div class="frow"><div class="flabel">Contactados</div><div class="fbar-w"><div class="fbar" id="fb-1" style="--fb-c:var(--blue);width:0%"></div></div><div class="fpct" id="fp-1">0</div></div>
+            <div class="frow"><div class="flabel">Demo/Reunion</div><div class="fbar-w"><div class="fbar" id="fb-2" style="--fb-c:var(--amber);width:0%"></div></div><div class="fpct" id="fp-2">0</div></div>
+            <div class="frow"><div class="flabel">Propuesta</div><div class="fbar-w"><div class="fbar" id="fb-3" style="--fb-c:var(--purple);width:0%"></div></div><div class="fpct" id="fp-3">0</div></div>
+            <div class="frow"><div class="flabel">Cerrado</div><div class="fbar-w"><div class="fbar" id="fb-4" style="--fb-c:var(--pink);width:0%"></div></div><div class="fpct" id="fp-4">0</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Actividades Prioritarias</div>
+          <div class="act"><div class="act-dot" style="background:var(--t3)"></div><div class="act-text" style="color:var(--t3);font-style:italic">Sin actividades aun — agrega prospectos para ver tareas aqui</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Acceso Rapido — Generacion de Contenido</div>
+        <div class="qa-grid">
+          <button class="qa-btn" style="--qa-c:var(--blue)" onclick="sp('ib-linkedin')"><span class="qa-icon">IB</span><span class="qa-label">Mensaje IB LinkedIn</span><div class="qa-desc">Primer contacto para Introducing Brokers</div></button>
+          <button class="qa-btn" style="--qa-c:var(--amber)" onclick="sp('academia-fu')"><span class="qa-icon">AC</span><span class="qa-label">Follow-up Academia</span><div class="qa-desc">Seguimiento para academias de trading</div></button>
+          <button class="qa-btn" style="--qa-c:var(--accent)" onclick="sp('retail-arg')"><span class="qa-icon">RT</span><span class="qa-label">Argumentario Retail</span><div class="qa-desc">Puntos clave para traders individuales</div></button>
+          <button class="qa-btn" style="--qa-c:var(--pink)" onclick="sp('cold-call')"><span class="qa-icon">CC</span><span class="qa-label">Script Llamada Fria</span><div class="qa-desc">Guion de 3 min para primer contacto</div></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ SEGMENTOS ═══════════ -->
+    <div class="panel" id="p-segmentos">
+      <div class="sg-grid">
+        <div class="sg" style="--sc:var(--seg-ib);--sc-b:rgba(56,189,248,.3)">
+          <div class="sg-hd"><div class="sg-name">Introducing Brokers</div><div class="sg-pri pri-hi">Alta</div></div>
+          <div class="sg-desc">IBs con comunidades activas en LATAM. Alto LTV, efecto multiplicador por volumen de captacion.</div>
+          <div class="sg-plabel">Potencial de captacion</div>
+          <div class="sg-pbar"><div class="sg-pfill" style="width:90%"></div></div>
+          <div class="sg-pills"><div class="pill">$5/lote comision</div><div class="pill">3 niveles sub-IB</div><div class="pill">Portal tiempo real</div><div class="pill">Sin cap de IB</div></div>
+          <button class="sg-btn" onclick="sp('seg-ib')">Generar propuesta IB</button>
+        </div>
+        <div class="sg" style="--sc:var(--seg-academia);--sc-b:rgba(34,197,94,.3)">
+          <div class="sg-hd"><div class="sg-name">Academias de Trading</div><div class="sg-pri pri-hi">Alta</div></div>
+          <div class="sg-desc">Escuelas con base de estudiantes activos. Partnership educativo + referral pasivo.</div>
+          <div class="sg-plabel">Potencial de captacion</div>
+          <div class="sg-pbar"><div class="sg-pfill" style="width:75%;background:var(--seg-academia)"></div></div>
+          <div class="sg-pills"><div class="pill">Demos ilimitadas</div><div class="pill">Co-branding</div><div class="pill">Material educativo</div><div class="pill">Webinars conjuntos</div></div>
+          <button class="sg-btn" onclick="sp('seg-academia')">Generar propuesta Academia</button>
+        </div>
+        <div class="sg" style="--sc:var(--seg-retail);--sc-b:rgba(168,85,247,.3)">
+          <div class="sg-hd"><div class="sg-name">Traders Retail</div><div class="sg-pri pri-md">Media</div></div>
+          <div class="sg-desc">Traders activos buscando spreads bajos, regulacion confiable y plataforma estable.</div>
+          <div class="sg-plabel">Potencial de captacion</div>
+          <div class="sg-pbar"><div class="sg-pfill" style="width:60%"></div></div>
+          <div class="sg-pills"><div class="pill">ASIC regulado</div><div class="pill">Spreads desde 0.0</div><div class="pill">MT4/MT5/TradingView</div><div class="pill">Pagos locales LATAM</div></div>
+          <button class="sg-btn" onclick="sp('seg-retail')">Generar propuesta Retail</button>
+        </div>
+        <div class="sg" style="--sc:var(--seg-inv);--sc-b:rgba(249,115,22,.3)">
+          <div class="sg-hd"><div class="sg-name">Inversores Individuales</div><div class="sg-pri pri-lo">Largo plazo</div></div>
+          <div class="sg-desc">Fondos y family offices buscando ECN real, infraestructura institucional y regulacion solida.</div>
+          <div class="sg-plabel">Potencial de captacion</div>
+          <div class="sg-pbar"><div class="sg-pfill" style="width:85%;background:var(--seg-inv)"></div></div>
+          <div class="sg-pills"><div class="pill">ECN real NDD</div><div class="pill">ASIC+FSCA+FSC</div><div class="pill">Equinix NY4/LD5</div><div class="pill">Lloyd's $1M/cuenta</div></div>
+          <button class="sg-btn" onclick="sp('seg-inst')">Generar propuesta Inversionista</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Canales de Prospeccion por Segmento</div>
+        <table class="tbl">
+          <thead><tr><th>Segmento</th><th>Canal principal</th><th>Canal secundario</th><th>Herramienta clave</th></tr></thead>
+          <tbody>
+            <tr><td><span class="dot-seg" style="background:var(--seg-ib)"></span>IBs</td><td>LinkedIn + WhatsApp directo</td><td>Referidos de red actual</td><td>Portal IB + demo live</td></tr>
+            <tr><td><span class="dot-seg" style="background:var(--seg-academia)"></span>Academias</td><td>Correo + LinkedIn</td><td>Instagram / TikTok educativo</td><td>Demo conjunta + material PDF</td></tr>
+            <tr><td><span class="dot-seg" style="background:var(--seg-retail)"></span>Retail</td><td>Grupos Telegram/Discord</td><td>YouTube / Reels</td><td>Cuenta Cent + bono entrada</td></tr>
+            <tr><td><span class="dot-seg" style="background:var(--seg-inv)"></span>Inversionista</td><td>Email frio personalizado</td><td>Eventos fintech / roadshows</td><td>White paper ECN + reunion formal</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══════════ PIPELINE ═══════════ -->
+    <div class="panel" id="p-pipeline">
+      <div class="kb">
+        <div class="kc">
+          <div class="kc-hd"><div class="kc-name">Prospecto</div><div class="kc-cnt" id="cnt-0">0</div></div>
+          <div id="col-0"></div>
+        </div>
+        <div class="kc">
+          <div class="kc-hd"><div class="kc-name">Contactado</div><div class="kc-cnt" id="cnt-1">0</div></div>
+          <div id="col-1"></div>
+        </div>
+        <div class="kc">
+          <div class="kc-hd"><div class="kc-name">Demo / Reunion</div><div class="kc-cnt" id="cnt-2">0</div></div>
+          <div id="col-2"></div>
+        </div>
+        <div class="kc">
+          <div class="kc-hd"><div class="kc-name">Propuesta</div><div class="kc-cnt" id="cnt-3">0</div></div>
+          <div id="col-3"></div>
+        </div>
+        <div class="kc">
+          <div class="kc-hd"><div class="kc-name">Cerrado</div><div class="kc-cnt" id="cnt-4">0</div></div>
+          <div id="col-4"></div>
+        </div>
+      </div>
+
+      <div class="form">
+        <div class="form-title">Agregar Prospecto Rapido</div>
+        <div class="fg">
+          <div class="fgrp"><div class="flbl">Nombre Completo / Empresa</div><input class="finp" id="p-nom" placeholder="Ej: Carlos Mendoza"></div>
+          <div class="fgrp"><div class="flbl">Correo Electronico</div><input class="finp" id="p-email" type="email" placeholder="Ej: carlos@gmail.com"></div>
+          <div class="fgrp"><div class="flbl">Segmento</div><select class="fsel" id="p-seg"><option value="">Seleccionar...</option><option>Traders Retail</option><option>Introducing Brokers</option><option>Academias de Trading</option><option>Fondos de Inversión</option><option>Networkers / Referidores</option><option>Inversores Individuales</option></select></div>
+          <div class="fgrp"><div class="flbl">Red Social</div><select class="fsel" id="p-social"><option value="">Seleccionar origen...</option><option>Facebook</option><option>Instagram</option><option>TikTok</option><option>LinkedIn</option><option>Telegram</option></select></div>
+          <div class="fgrp"><div class="flbl">Pais</div><input class="finp" id="p-pais" placeholder="Ej: Mexico"></div>
+          <div class="fgrp"><div class="flbl">Prioridad</div><select class="fsel" id="p-pri"><option value="Alta">Alta</option><option value="Media" selected>Media</option><option value="Baja">Baja</option></select></div>
+          <div class="fgrp full"><div class="flbl">Notas iniciales</div><input class="finp" id="p-notas" placeholder="Ej: Tiene canal YouTube con 15K subs, interesado en programa IB"></div>
+        </div>
+        <div class="f-actions">
+          <button class="btn-p" onclick="addP()">Agregar al Pipeline</button>
+          <button class="btn-s" onclick="genContact()">Generar Mensaje de Contacto</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ PLAYBOOK ═══════════ -->
+    <div class="panel" id="p-playbook">
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title">Semana Tipo — BDM VT Markets</div>
+        <div class="wk">
+          <div class="day"><div class="day-n">Lunes</div><div class="day-a">Revision pipeline + priorizar semana</div><div class="day-a">10 mensajes frios LinkedIn (IB/Academia)</div><div class="day-a">Actualizar CRM</div></div>
+          <div class="day"><div class="day-n">Martes</div><div class="day-a">Llamadas a prospects calientes</div><div class="day-a">Enviar propuestas pendientes</div><div class="day-a">Follow-up Email dia 3</div></div>
+          <div class="day"><div class="day-n">Mierco</div><div class="day-a">Demos / reuniones programadas</div><div class="day-a">Contenido LinkedIn (1 post)</div><div class="day-a">Revision respuestas email</div></div>
+          <div class="day"><div class="day-n">Jueves</div><div class="day-a">Nuevos prospectos cold outreach</div><div class="day-a">Cierre de negociaciones abiertas</div><div class="day-a">Registro cierres y depositos</div></div>
+          <div class="day"><div class="day-n">Viernes</div><div class="day-a">Reporte semanal KPIs</div><div class="day-a">Planificacion semana siguiente</div><div class="day-a">Breakup emails frios 21+ dias</div></div>
+        </div>
+      </div>
+      <div class="g2" style="margin-bottom:14px">
+        <div class="card">
+          <div class="card-title">Mensajes Clave por Segmento</div>
+          <div class="msg-item" style="--mi-c:var(--seg-ib)"><div class="msg-seg">IB</div>"Convierte tu red en ingresos recurrentes: $5/lote + estructura multinivel hasta 3 niveles."</div>
+          <div class="msg-item" style="--mi-c:var(--seg-academia)"><div class="msg-seg">Academia</div>"Tus estudiantes practican con demos reales — y cuando depositan, tu academia gana con ellos."</div>
+          <div class="msg-item" style="--mi-c:var(--seg-retail)"><div class="msg-seg">Retail</div>"Mismas condiciones que los profesionales: spreads desde 0.0, sin dealing desk, ASIC regulado."</div>
+          <div class="msg-item" style="--mi-c:var(--seg-inv)"><div class="msg-seg">Inversionista</div>"ECN puro, latencia sub-milisegundo Equinix NY4/LD5, fondos asegurados Lloyd's $1M."</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Objeciones Frecuentes</div>
+          <div class="obj"><div class="obj-n">01</div><div><div class="obj-q">"Ya trabajo con otro broker"</div><div class="obj-a">Perfecto. No te pido que lo dejes. Abre una cuenta demo y compara condiciones reales en paralelo — especialmente spreads en NFP.</div></div></div>
+          <div class="obj"><div class="obj-n">02</div><div><div class="obj-q">"No conozco VT Markets"</div><div class="obj-a">Fundado 2015, Sydney. ASIC regulado. Operamos en 160 paises con $100B en volumen mensual.</div></div></div>
+          <div class="obj"><div class="obj-n">03</div><div><div class="obj-q">"Las comisiones IB son bajas"</div><div class="obj-a">$5/lote base + sub-IB 3 niveles. Un IB con 50 traders activos haciendo 10 lotes/mes = $2,500/mes recurrente.</div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Generador de Contenido</div>
+        <div class="cg-grid">
+          <button class="cg-btn" style="--cg-c:var(--blue)" onclick="sp('li-post')"><span class="cg-ico">IN</span><span class="cg-lbl">Post LinkedIn</span></button>
+          <button class="cg-btn" style="--cg-c:var(--amber)" onclick="sp('email-seq')"><span class="cg-ico">@</span><span class="cg-lbl">Secuencia Email</span></button>
+          <button class="cg-btn" style="--cg-c:var(--accent)" onclick="sp('video-ideas')"><span class="cg-ico">VD</span><span class="cg-lbl">Ideas de Video</span></button>
+          <button class="cg-btn" style="--cg-c:var(--pink)" onclick="sp('webinar')"><span class="cg-ico">WB</span><span class="cg-lbl">Guion Webinar</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ KPIs ═══════════ -->
+    <div class="panel" id="p-kpis">
+      <div class="kpi-g">
+        <div class="kpi-c">
+          <div class="kpi-lbl">Meta Mensual USD</div>
+          <div class="kpi-val">$0</div>
+          <div class="pbar"><div class="pfill" style="width:0%"></div></div>
+          <div class="plabels"><span>0% completado</span><span>Meta: $128K</span></div>
+        </div>
+        <div class="kpi-c">
+          <div class="kpi-lbl">Ratio de Conversion</div>
+          <div class="kpi-val">0%</div>
+          <div class="pbar"><div class="pfill" style="--pb-c:var(--blue);width:0%"></div></div>
+          <div class="plabels"><span style="color:var(--t3)">Sin datos aun</span><span>Ref: 8-12%</span></div>
+        </div>
+        <div class="kpi-c">
+          <div class="kpi-lbl">Ticket Promedio</div>
+          <div class="kpi-val">$0</div>
+          <div class="pbar"><div class="pfill" style="--pb-c:var(--amber);width:0%"></div></div>
+          <div class="plabels"><span>0 cierres este mes</span><span>Meta: 8</span></div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title">KPIs Semanales por Segmento</div>
+        <table class="tbl">
+          <thead><tr><th>Segmento</th><th>Contactos/sem</th><th>Demos/sem</th><th>Cierres/mes</th><th>Capital meta</th><th>Tendencia</th></tr></thead>
+          <tbody>
+            <tr><td><span class="dot-seg" style="background:var(--seg-ib)"></span>IBs</td><td>15-20</td><td>3-4</td><td>2</td><td>$40K+</td><td class="trend-up">En subida</td></tr>
+            <tr><td><span class="dot-seg" style="background:var(--seg-academia)"></span>Academias</td><td>8-10</td><td>2-3</td><td>1</td><td>$25K+</td><td>Estable</td></tr>
+            <tr><td><span class="dot-seg" style="background:var(--seg-retail)"></span>Retail</td><td>30-40</td><td>—</td><td>3</td><td>$15K</td><td>Estable</td></tr>
+            <tr><td><span class="dot-seg" style="background:var(--seg-inv)"></span>Inversionista</td><td>5-8</td><td>1-2</td><td>0-1</td><td>$50K+</td><td class="trend-dn">Lento ciclo</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="bn">
+        <div class="bn-t">Diagnostico de Cuello de Botella</div>
+        <div class="bn-body">Sin datos suficientes aun. Agrega prospectos al pipeline para generar el analisis de conversion por etapa.</div>
+      </div>
+      <div class="act-row">
+        <button class="ar-btn" onclick="sp('diag-pipeline')"><span class="ar-lbl">Diagnostico Pipeline</span><span class="ar-desc">Analisis del estado actual</span></button>
+        <button class="ar-btn" onclick="sp('followup-sys')"><span class="ar-lbl">Sistema de Seguimiento</span><span class="ar-desc">Cadencia y templates de follow-up</span></button>
+        <button class="ar-btn" onclick="sp('plan-306090')"><span class="ar-lbl">Plan 30-60-90 Dias</span><span class="ar-desc">Hoja de ruta por etapas</span></button>
+      </div>
+    </div>
+
+    <!-- ═══════════ CORREOS ═══════════ -->
+    <div class="panel" id="p-correos">
+      <div class="correos-header">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--t1);margin-bottom:3px">Lista de Correos</div>
+          <div style="font-size:13px;color:var(--t3)">Prospectos con correo electronico registrado. Selecciona para usar en campanas.</div>
+        </div>
+        <div class="correos-actions">
+          <select class="correos-filter" id="correos-seg-filter" onchange="renderCorreosTable()">
+            <option value="">Todos los segmentos</option>
+            <option value="Traders Retail">Traders Retail</option>
+            <option value="Introducing Brokers">Introducing Brokers</option>
+            <option value="Academias de Trading">Academias de Trading</option>
+            <option value="Fondos de Inversión">Fondos de Inversión</option>
+            <option value="Networkers / Referidores">Networkers / Referidores</option>
+            <option value="Inversores Individuales">Inversores Individuales</option>
+          </select>
+          <button class="btn-ghost" onclick="correoSelectAll()">Seleccionar todos</button>
+          <button class="btn-ghost" onclick="correoDeselectAll()">Limpiar seleccion</button>
+          <button class="btn-p" onclick="correoUsarEnCampana()">Usar en campana</button>
+        </div>
+      </div>
+
+      <div id="correos-sel-bar" style="display:none" class="correos-sel-bar">
+        <span id="correos-sel-count">0 correos seleccionados</span>
+        <button class="btn-ghost" onclick="correoDeselectAll()">Limpiar</button>
+      </div>
+
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="correos-table-wrap">
+          <table class="correos-tbl" id="correos-tbl">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="chk-all" onchange="correoToggleAll(this.checked)" title="Seleccionar todos"></th>
+                <th>Nombre</th>
+                <th>Correo Electronico</th>
+                <th>Segmento</th>
+                <th>Etapa</th>
+                <th>Pais</th>
+              </tr>
+            </thead>
+            <tbody id="correos-tbody"></tbody>
+          </table>
+          <div id="correos-empty" class="correos-empty" style="display:none">
+            Sin prospectos con correo electronico. Agrega prospectos con correo desde el Pipeline.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ CAMPANAS ═══════════ -->
+    <div class="panel" id="p-reuniones">
+      <div class="reun-header">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--t1);margin-bottom:3px">Reuniones</div>
+          <div style="font-size:13px;color:var(--t3)">Agenda y seguimiento de reuniones con prospectos.</div>
+        </div>
+        <button class="btn-p" onclick="openReunionModal()">+ Nueva Reunion</button>
+      </div>
+
+      <div class="reun-summary">
+        <div class="reun-sc" style="--rsc-c:var(--amber)">
+          <div class="reun-sc-lbl">Pendientes</div>
+          <div class="reun-sc-val" id="reun-cnt-pendiente">0</div>
+        </div>
+        <div class="reun-sc" style="--rsc-c:var(--blue)">
+          <div class="reun-sc-lbl">Confirmadas</div>
+          <div class="reun-sc-val" id="reun-cnt-confirmada">0</div>
+        </div>
+        <div class="reun-sc" style="--rsc-c:var(--accent)">
+          <div class="reun-sc-lbl">Realizadas</div>
+          <div class="reun-sc-val" id="reun-cnt-realizada">0</div>
+        </div>
+      </div>
+
+      <div class="reun-filters" style="margin-bottom:16px">
+        <select class="reun-filter" id="reun-filter-estado" onchange="renderReuniones()">
+          <option value="">Todos los estados</option>
+          <option value="Pendiente">Pendiente</option>
+          <option value="Confirmada">Confirmada</option>
+          <option value="Realizada">Realizada</option>
+          <option value="Cancelada">Cancelada</option>
+        </select>
+        <select class="reun-filter" id="reun-filter-seg" onchange="renderReuniones()">
+          <option value="">Todos los segmentos</option>
+          <option value="Traders Retail">Traders Retail</option>
+          <option value="Introducing Brokers">Introducing Brokers</option>
+          <option value="Academias de Trading">Academias de Trading</option>
+          <option value="Fondos de Inversión">Fondos de Inversión</option>
+          <option value="Networkers / Referidores">Networkers / Referidores</option>
+          <option value="Inversores Individuales">Inversores Individuales</option>
+        </select>
+      </div>
+
+      <div class="reun-table-wrap">
+        <table class="reun-tbl" id="reun-tbl">
+          <thead>
+            <tr>
+              <th>Prospecto</th>
+              <th>Contacto</th>
+              <th>Segmento</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Tipo</th>
+              <th>Estado</th>
+              <th>Notas</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="reun-tbody"></tbody>
+        </table>
+        <div id="reun-empty" class="reun-empty" style="display:none">
+          Sin reuniones registradas. Agenda tu primera reunion con el boton de arriba.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL generico (contenido generado) -->
+<div class="mo" id="modal">
+  <div class="mo-box">
+    <div class="mo-hd">
+      <div class="mo-title" id="mo-title">Generando...</div>
+      <button class="mo-close" onclick="closeM()">x</button>
+    </div>
+    <div class="mo-tag">EL TICO FX BDM — CONTENIDO GENERADO</div>
+    <div class="mo-body" id="mo-body"></div>
+    <div class="mo-actions">
+      <button class="btn-p" onclick="copyM()">Copiar</button>
+      <button class="btn-s" onclick="closeM()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL Nueva / Editar Reunion -->
+<div class="mo" id="modal-reunion">
+  <div class="mo-box" style="max-width:580px">
+    <div class="mo-hd">
+      <div class="mo-title" id="modal-reunion-title">Nueva Reunion</div>
+      <button class="mo-close" onclick="closeReunionModal()">x</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="fgrp">
+          <div class="flbl">Nombre del prospecto</div>
+          <input class="finp" id="reun-nombre" placeholder="Nombre completo">
+        </div>
+        <div class="fgrp">
+          <div class="flbl">Email</div>
+          <input class="finp" id="reun-email" type="email" placeholder="correo@ejemplo.com">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="fgrp">
+          <div class="flbl">Segmento</div>
+          <select class="fsel" id="reun-seg">
+            <option value="">Seleccionar</option>
+            <option value="Traders Retail">Traders Retail</option>
+            <option value="Introducing Brokers">Introducing Brokers</option>
+            <option value="Academias de Trading">Academias de Trading</option>
+            <option value="Fondos de Inversión">Fondos de Inversión</option>
+            <option value="Networkers / Referidores">Networkers / Referidores</option>
+            <option value="Inversores Individuales">Inversores Individuales</option>
+          </select>
+        </div>
+        <div class="fgrp">
+          <div class="flbl">Tipo de reunion</div>
+          <select class="fsel" id="reun-tipo">
+            <option value="Descubrimiento">Descubrimiento</option>
+            <option value="Demo">Demo</option>
+            <option value="Seguimiento">Seguimiento</option>
+            <option value="Cierre">Cierre</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+        <div class="fgrp">
+          <div class="flbl">Fecha</div>
+          <input class="finp" id="reun-fecha" type="date">
+        </div>
+        <div class="fgrp">
+          <div class="flbl">Hora</div>
+          <input class="finp" id="reun-hora" type="time">
+        </div>
+        <div class="fgrp">
+          <div class="flbl">Estado</div>
+          <select class="fsel" id="reun-estado">
+            <option value="Pendiente">Pendiente</option>
+            <option value="Confirmada">Confirmada</option>
+            <option value="Realizada">Realizada</option>
+            <option value="Cancelada">Cancelada</option>
+          </select>
+        </div>
+      </div>
+      <div class="fgrp">
+        <div class="flbl">Notas</div>
+        <input class="finp" id="reun-notas" placeholder="Tema a tratar, contexto, etc.">
+      </div>
+    </div>
+    <div class="mo-actions" style="margin-top:16px">
+      <button class="btn-p" onclick="guardarReunion()">Guardar Reunion</button>
+      <button class="btn-s" onclick="closeReunionModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Logout ────────────────────────────────────────────────
+async function crmLogout(){
+  try{await db.auth.signOut();}catch(e){}
+  sessionStorage.removeItem('ticofx_session');
+  window.location.href='/';
+}
+
+// ── Date ──────────────────────────────────────────────────
+const d=new Date();
+document.getElementById('wdate').textContent=d.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+
+// ── Theme toggle ──────────────────────────────────────────
+(function initTheme(){
+  const saved=localStorage.getItem('eltf-theme')||'dark';
+  if(saved==='light'){
+    document.body.classList.add('light');
+    document.getElementById('theme-icon-sun').style.display='block';
+    document.getElementById('theme-icon-moon').style.display='none';
+    document.getElementById('theme-label').textContent='Modo Oscuro';
+  }
+})();
+
+function toggleTheme(){
+  const isLight=document.body.classList.toggle('light');
+  localStorage.setItem('eltf-theme',isLight?'light':'dark');
+  document.getElementById('theme-icon-sun').style.display=isLight?'block':'none';
+  document.getElementById('theme-icon-moon').style.display=isLight?'none':'block';
+  document.getElementById('theme-label').textContent=isLight?'Modo Oscuro':'Modo Claro';
+}
+
+// ── Tabs ──────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const t=b.dataset.t;
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    document.getElementById('p-'+t).classList.add('on');
+    if(t==='correos')renderCorreosTable();
+  });
+});
+
+// ── Content library ───────────────────────────────────────
+const lib={
+'ib-linkedin':{t:'Mensaje IB — LinkedIn',c:`Hola [Nombre],
+
+Te contacto porque el perfil que tienes no es comun — y VT Markets esta siendo selectivo con los IBs que suma en LATAM.
+
+Somos un broker regulado ASIC con estructura multinivel sin limite de niveles, comisiones desde $8/lote y tecnologia que te da visibilidad en tiempo real de cada operacion en tu red.
+
+No te pido que cambies nada de lo que ya haces. Solo quiero entender como opera tu red para saber si hay una oportunidad real aqui.
+
+Tienes 15 minutos esta semana?`},
+'academia-fu':{t:'Follow-up Academia — Email',c:`Asunto: Una pregunta rapida sobre tu academia
+
+[Nombre],
+
+Te escribi la semana pasada sobre el partnership educativo con VT Markets. Solo quiero saber si llegaste a ver el material.
+
+En resumen: tus estudiantes practican con demos ilimitadas, y cuando pasan a cuenta real, la academia recibe una participacion en comisiones — sin que ellos paguen nada adicional.
+
+Tiene sentido que agendemos 20 minutos esta semana?
+
+[Tu nombre]`},
+'retail-arg':{t:'Argumentario Retail — Puntos Clave',c:`ARGUMENTARIO VT MARKETS — TRADER RETAIL
+
+1. REGULACION SOLIDA
+   ASIC Australia No. 406684 — una de las mas exigentes del mundo.
+   Fondos segregados + seguro Lloyd's of London hasta $1,000,000.
+
+2. CONDICIONES REALES
+   Spreads desde 0.0 pips en cuenta STP Raw (sin comisiones ocultas).
+   Sin dealing desk — NDD puro, ejecucion directa al mercado.
+
+3. PLATAFORMAS COMPLETAS
+   MT4, MT5, TradingView y app VT Markets — todas incluidas.
+   Servidores Equinix NY4 y LD5 (latencia sub-milisegundo).
+
+4. ACCESO LOCAL LATAM
+   PIX (Brasil), SPEI/OXXO (Mexico), PSE/Nequi (Colombia),
+   WebPay (Chile), Yape/Plin (Peru). Sin comisiones en metodos locales.
+
+5. ENTRADA FLEXIBLE
+   Cuenta Cent desde $10.  Standard desde $100.  PRO ECN desde $10,000.`},
+'cold-call':{t:'Script Llamada Fria — 3 min',c:`SCRIPT LLAMADA FRIA — VT MARKETS
+
+[0:00–0:20] APERTURA
+"Hola [Nombre], habla [Tu nombre]. Te llamo porque vi tu perfil en [LinkedIn/referido de X]. Tienes 3 minutos?"
+
+[0:20–1:00] GANCHO (adaptar por segmento)
+IB: "Actualmente tienes algun acuerdo de referidos con algun broker?"
+Retail: "Actualmente operas Forex? Con que broker?"
+Academia: "Tu academia trabaja con algun broker en el programa demo?"
+
+[1:00–2:00] VALOR RAPIDO
+"Trabajo con VT Markets en LATAM. [Propuesta en 1 frase].
+Hay algo concreto que podria [resultado especifico] para ti."
+
+[2:00–2:40] CIERRE DE SIGUIENTE PASO
+"No te tomo mas tiempo. Tiene sentido 20 minutos esta semana para ver los numeros exactos?"
+
+[2:40–3:00] MANEJO DE OBJECION
+"Mandame info" -> "Cual es tu volumen mensual aproximado para enviarte lo mas relevante?"
+"No me interesa" -> "Entendido. Puedo preguntarte por que, solo para aprender?"`},
+'seg-ib':{t:'Propuesta IB — Introducing Broker',c:`PROPUESTA VT MARKETS — PROGRAMA IB
+
+ESTRUCTURA DE COMISIONES
+• Cuenta Standard: hasta $3/lote (spread-sharing)
+• Cuenta STP Raw: $3/lote fijo
+• Estructura multinivel: hasta 3 niveles de sub-IBs
+• Sin limite maximo de comision mensual
+
+PANEL DE CONTROL IB
+• Dashboard en tiempo real: volumen, comisiones, clientes activos
+• Historial de pagos completo + herramientas de marketing
+• Gestor de cuenta dedicado
+
+PAGOS
+• Semanal o mensual (a elegir)
+• Transferencia bancaria, cripto o metodos locales
+• Sin monto minimo de cobro
+
+Revisamos los numeros con tu volumen actual?
+[Tu nombre] | VT Markets BDM`},
+'seg-academia':{t:'Propuesta Academia de Trading',c:`PROPUESTA VT MARKETS — PARTNERSHIP EDUCATIVO
+
+QUE OFRECE VT MARKETS A TU ACADEMIA
+• Cuentas demo ilimitadas para tus estudiantes (sin expiracion)
+• Entorno real de trading: spreads reales, condiciones de mercado reales
+• Material educativo co-branded con el nombre de tu academia
+• Webinars conjuntos o sesiones especiales para tus alumnos
+• Dashboard de referidos: visibilidad completa de conversiones
+
+COMO FUNCIONA EL INGRESO PARA TI
+Cuando un estudiante pasa de demo a cuenta real:
+→ Tu academia recibe participacion en comisiones de por vida
+→ Sin costo adicional para el estudiante
+→ Sin minimo de conversiones requerido
+
+POR QUE VT MARKETS
+ASIC regulado — exactamente el tipo de broker que tus alumnos deben conocer.
+MT4, MT5, TradingView — los estandares de la industria.
+
+20 minutos para ver como integrarlo en tu proximo ciclo?
+[Tu nombre] | VT Markets`},
+'seg-retail':{t:'Propuesta Trader Retail',c:`PROPUESTA VT MARKETS — TRADER INDIVIDUAL
+
+3 RAZONES POR LAS QUE VALE LA PENA COMPARAR
+
+1. CONDICIONES REALES
+Cuenta STP Raw: spreads desde 0.0 + $3/lote fijo. Sin markups ocultos.
+Comparalo con tu broker actual en condiciones de alta volatilidad (NFP, CPI).
+
+2. REGULACION QUE PROTEGE TU CAPITAL
+ASIC Australia — uno de los reguladores mas exigentes del mundo.
+Fondos segregados + Lloyd's of London hasta $1,000,000 por cuenta.
+
+3. PLATAFORMAS COMPLETAS
+MT4, MT5, TradingView — tu decides. Todas incluidas, sin cobro extra.
+
+SIGUIENTE PASO SUGERIDO
+Abre una cuenta demo STP Raw y opera 1 semana. Compara spreads y
+velocidad de ejecucion con lo que tienes ahora. Sin compromiso.
+
+[Tu nombre] | VT Markets`},
+'seg-inst':{t:'Propuesta Inversor Institucional',c:`PROPUESTA VT MARKETS — CUENTA INSTITUCIONAL
+
+INFRAESTRUCTURA DE EJECUCION
+• Modelo NDD (No Dealing Desk) — sin contraparte interna
+• Colocation Equinix NY4 (Nueva York) y LD5 (Londres)
+• Latencia sub-milisegundo en condiciones normales de mercado
+• Agregacion de liquidez multi-banco
+
+REGULACION Y PROTECCION
+• ASIC Australia No. 406684 — regulacion tier 1
+• FSCA Sudafrica FSP No. 50455
+• FSC Mauricio — entidad operativa LATAM
+• Lloyd's of London hasta USD $1,000,000 por cuenta
+
+CONDICIONES CUENTA PRO ECN
+• Spreads desde 0.0 pips en pares principales
+• Comision: $3/lote round-turn
+• 1,000+ instrumentos CFD disponibles
+• Gestor de cuenta institucional dedicado
+
+Una reunion tecnica de 30 minutos para revisar condiciones especificas?
+[Tu nombre] | VT Markets | [email] | [tel]`},
+'li-post':{t:'Post LinkedIn — VT Markets',c:`El error que cometen la mayoria de traders cuando buscan broker:
+
+Comparan el spread del par principal en condiciones normales.
+
+El spread durante NFP, CPI o FOMC es lo que realmente importa.
+
+En esos momentos:
+— Brokers con dealing desk ensanchan el spread
+— Brokers NDD / ECN real lo mantienen (o casi)
+
+La diferencia en 1 solo evento puede superar las comisiones de todo un mes.
+
+VT Markets opera con modelo NDD en servidores Equinix NY4 y LD5.
+Regulado ASIC. Spreads desde 0.0 pips.
+
+Si operas noticias economicas, eso importa mas que cualquier bono de bienvenida.
+
+Cual fue el spread mas extremo que viste con tu broker actual?
+
+—
+BDM LATAM en VT Markets`},
+'email-seq':{t:'Secuencia Email — IB (estructura 5 emails)',c:`SECUENCIA EMAIL — INTRODUCING BROKER (5 emails)
+
+EMAIL 1 — AIDA (Dia 0)
+Asunto: Tu red de traders genera ingresos recurrentes para ti?
+Objetivo: Despertar curiosidad, primer contacto.
+
+EMAIL 2 — PAS (Dia 3)
+Asunto: El problema de referir traders sin saber cuanto ganas
+Objetivo: Tocar el dolor de falta de transparencia en comisiones.
+
+EMAIL 3 — BAB (Dia 7)
+Asunto: Como [IB exitoso] factura $X al mes con su red
+Objetivo: Prueba social + transformacion visible.
+
+EMAIL 4 — 4U (Dia 12)
+Asunto: Oferta de onboarding IB esta semana (antes del [fecha])
+Objetivo: Urgencia suave + nuevo dato de valor.
+
+EMAIL 5 — BREAKUP (Dia 21)
+Asunto: Ultimo mensaje — VT Markets
+Objetivo: Cierre digno, dejar puerta abierta.`},
+'video-ideas':{t:'Ideas de Contenido en Video',c:`IDEAS CONTENIDO VIDEO — VT MARKETS BDM
+
+1. "Que es un IB y como gana dinero?" (YouTube / Reels)
+   Formato: talking head 60–90 seg. Gancho: "El broker te paga por traer clientes."
+
+2. "Comparativa de spreads: VT Markets vs [broker popular]" (YouTube)
+   Formato: pantalla compartida, operacion en vivo. Duracion: 5–8 min.
+
+3. "Como una academia de trading genera ingresos sin depositar nada" (Reels)
+   Formato: animacion simple + voz. Duracion: 45–60 seg.
+
+4. "El riesgo que nadie te dice sobre brokers no regulados" (LinkedIn/YouTube)
+   Formato: educational, datos verificables. Duracion: 3–5 min.
+
+5. "Asi funciona el seguro Lloyd's de $1,000,000 de VT Markets" (YouTube)
+   Formato: explicacion visual. Duracion: 4–6 min.
+
+6. "Demo vs cuenta real: la diferencia que nadie explica" (Reels/TikTok)
+   Formato: comparativa visual. Duracion: 45 seg.`},
+'webinar':{t:'Guion de Webinar — IBs LATAM',c:`GUION WEBINAR: "Construye ingresos recurrentes con VT Markets"
+Duracion estimada: 45 min | Audiencia: IBs potenciales
+
+[0–5 min] BIENVENIDA
+Quien soy, de donde hablo, por que este webinar.
+"El objetivo de hoy: que salgas con claridad sobre si este modelo te conviene."
+
+[5–15 min] EL PROBLEMA DEL IB PROMEDIO
+Comisiones variables, portales opacos, pagos tardios, sin estructura de crecimiento.
+
+[15–30 min] COMO FUNCIONA EL PROGRAMA IB EN VT MARKETS
+→ Estructura de comisiones detallada
+→ Demo en vivo del portal IB
+→ Ejemplo real: IB con 30 traders activos = $X/mes
+
+[30–38 min] CASOS Y PREGUNTAS FRECUENTES
+Objeciones comunes, comparaciones, como empezar.
+
+[38–45 min] CIERRE Y SIGUIENTE PASO
+Oferta de onboarding asistido esta semana.
+"No necesitas abandonar tu broker actual para empezar a construir con nosotros."`},
+'diag-pipeline':{t:'Diagnostico de Pipeline',c:`DIAGNOSTICO PIPELINE — VT MARKETS BDM
+
+ESTADO ACTUAL
+• 0 prospectos activos en pipeline
+• Tasa de conversion global: sin datos
+• Sin cuellos de botella identificados aun
+
+ANALISIS POR ETAPA
+1. Prospecto → Contactado: sin datos
+2. Contactado → Demo: sin datos
+3. Demo → Propuesta: sin datos
+4. Propuesta → Cerrado: sin datos
+
+PRIORIDADES PARA ARRANCAR
+[ ] Agregar primeros 10 prospectos al pipeline
+[ ] Iniciar outreach en segmento IB (mayor LTV)
+[ ] Registrar cada interaccion el mismo dia`},
+'followup-sys':{t:'Sistema de Seguimiento',c:`SISTEMA DE SEGUIMIENTO VT MARKETS BDM
+
+CADENCIA ESTANDAR — PRIMER CONTACTO SIN RESPUESTA
+• Dia 0: Mensaje inicial (LinkedIn / Email)
+• Dia 3: Follow-up corto ("llegaste a ver esto?")
+• Dia 7: Nuevo angulo de valor
+• Dia 14: Intento final con recurso nuevo
+• Dia 21: Email breakup (cierre digno)
+
+POST-DEMO SIN PROPUESTA
+• 24h: Enviar resumen + propuesta
+• 72h: Confirmacion de recepcion
+• 7 dias: Follow-up con caso similar
+
+POST-PROPUESTA SIN RESPUESTA
+• 24h: "Pudiste revisarla?"
+• 3 dias: Ofrece ajuste / modificacion
+• 7 dias: Llamada directa
+• 14 dias: Breakup con puerta abierta
+
+REGLAS DE ORO
+1. Un solo CTA por mensaje
+2. Cada follow-up agrega valor nuevo — nunca "solo queria saber si..."
+3. Maximo 5 toques antes de pausa de 30 dias
+4. Registrar todo en CRM antes del final del dia`},
+'plan-306090':{t:'Plan 30-60-90 Dias',c:`PLAN 30-60-90 DIAS — BDM VT MARKETS LATAM
+
+DIAS 1–30: CONSTRUCCION DE BASE
+Objetivo: Pipeline de 50+ prospectos calificados
+• Mapear 100 targets por segmento en LinkedIn
+• Iniciar 50 conversaciones (IBs priorizados)
+• Configurar secuencias de email por segmento
+Meta: 3–5 demos agendadas, 1–2 cierres
+
+DIAS 31–60: ACELERACION
+Objetivo: Ritmo de 2 cierres/semana
+• Optimizar mensajes con base en tasa de respuesta real
+• Activar canal LinkedIn (3 posts/semana)
+• Primer webinar para IBs (captacion masiva)
+Meta: 6–8 cierres acumulados, $50K+ captados
+
+DIAS 61–90: ESCALA Y SISTEMATIZACION
+Objetivo: Sistema replicable, primeros IBs activos generando referidos
+• 2–3 IBs activos con sub-redes propias
+• Automatizacion de seguimiento con templates probados
+• Prospeccion de 1er fondo de inversion institucional
+Meta: $128K captado mensual, conversion 10%+`}
+};
+
+function sp(key,ctx={}){
+  const data=lib[key];
+  if(!data)return;
+  let c=data.c;
+  if(ctx.nombre)c=c.replace(/\[Nombre\]/g,ctx.nombre);
+  if(ctx.pais)c=c.replace(/\[Pais\]/g,ctx.pais);
+  document.getElementById('mo-title').textContent=data.t;
+  document.getElementById('mo-body').textContent=c;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeM(){document.getElementById('modal').classList.remove('open')}
+
+function copyM(){
+  const t=document.getElementById('mo-body').textContent;
+  navigator.clipboard.writeText(t).then(()=>{
+    const b=document.querySelector('.mo-actions .btn-p');
+    const orig=b.textContent;
+    b.textContent='Copiado';
+    setTimeout(()=>b.textContent=orig,2000);
+  });
+}
+
+// ── Supabase ──────────────────────────────────────────────
+const SUPA_URL = 'https://bwbyjhotaudunqpaiqjv.supabase.co';
+const SUPA_KEY = 'sb_publishable_3dGYMUV_W3fsYEqwHAXh9w_Yx7DGdw8';
+const db = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+// ── Config ────────────────────────────────────────────────
+const segColor={
+  // Segmentos canónicos (mismos valores que usa capture-lead / la landing)
+  'Traders Retail':           {hex:'#a855f7', bg:'rgba(168,85,247,.15)',  cssVar:'var(--seg-retail)'},
+  'Introducing Brokers':      {hex:'#38bdf8', bg:'rgba(56,189,248,.15)',  cssVar:'var(--seg-ib)'},
+  'Academias de Trading':     {hex:'#22c55e', bg:'rgba(34,197,94,.15)',   cssVar:'var(--seg-academia)'},
+  'Fondos de Inversión':      {hex:'#f59e0b', bg:'rgba(245,158,11,.15)',  cssVar:'var(--seg-academia)'},
+  'Networkers / Referidores': {hex:'#ec4899', bg:'rgba(236,72,153,.15)',  cssVar:'var(--seg-ib)'},
+  'Inversores Individuales':  {hex:'#f97316', bg:'rgba(249,115,22,.15)',  cssVar:'var(--seg-inv)'},
+  // Alias legados (datos antiguos en la tabla)
+  IB:          {hex:'#38bdf8', bg:'rgba(56,189,248,.15)',  cssVar:'var(--seg-ib)'},
+  Academia:    {hex:'#22c55e', bg:'rgba(34,197,94,.15)',   cssVar:'var(--seg-academia)'},
+  Retail:      {hex:'#a855f7', bg:'rgba(168,85,247,.15)',  cssVar:'var(--seg-retail)'},
+  Inversionista:{hex:'#f97316',bg:'rgba(249,115,22,.15)',  cssVar:'var(--seg-inv)'}
+};
+const fuenteLabel={landing:'🌐 Landing',meta_ads:'📣 Meta Ads',email_frio:'✉️ Email frío',linkedin:'💼 LinkedIn',referido:'🤝 Referido',manual:'✍️ Manual'};
+const socialIcon={Facebook:'FB',Instagram:'IG',TikTok:'TT',LinkedIn:'LI',Telegram:'TG'};
+const etapaIdx={'Prospecto':0,'Contactado':1,'Demo / Reunion':2,'Propuesta':3,'Cerrado':4};
+
+// ── Prospects cache (for dashboard + correos) ─────────────
+let prospectsCache = [];
+
+// ── Update dashboard metrics from pipeline data ───────────
+function updateDashboard(){
+  const total = prospectsCache.length;
+  const activos = prospectsCache.filter(p=>p.etapa!=='Cerrado').length;
+  const negoc = prospectsCache.filter(p=>p.etapa==='Propuesta'||p.etapa==='Demo / Reunion').length;
+  const cerrados = prospectsCache.filter(p=>p.etapa==='Cerrado').length;
+
+  // Metric cards
+  const activosEl = document.getElementById('dash-activos');
+  const activosDeltaEl = document.getElementById('dash-activos-delta');
+  if(activosEl) activosEl.textContent = activos;
+  if(activosDeltaEl) activosDeltaEl.textContent = activos===0 ? 'Sin prospectos aun' : `${activos} en seguimiento activo`;
+
+  const negocEl = document.getElementById('dash-negoc');
+  const negocDeltaEl = document.getElementById('dash-negoc-delta');
+  if(negocEl) negocEl.textContent = negoc;
+  if(negocDeltaEl) negocDeltaEl.textContent = negoc===0 ? 'Sin negociaciones' : `Demo + Propuesta`;
+
+  const cerEl = document.getElementById('dash-cerrados');
+  if(cerEl) cerEl.textContent = cerrados;
+
+  // Funnel bars
+  const counts = [0,1,2,3,4].map(i=>{
+    const col=document.getElementById(`col-${i}`);
+    return col ? col.children.length : 0;
+  });
+  const maxCount = Math.max(...counts,1);
+  counts.forEach((cnt,i)=>{
+    const bar = document.getElementById(`fb-${i}`);
+    const pct = document.getElementById(`fp-${i}`);
+    if(bar) bar.style.width = Math.round((cnt/maxCount)*100)+'%';
+    if(pct) pct.textContent = cnt;
+  });
+}
+
+// ── Render card ───────────────────────────────────────────
+function renderCard(p){
+  const sc=segColor[p.segmento];
+  const si=p.social?`${socialIcon[p.social]||''} ${p.social}`:'';
+  const idx=etapaIdx[p.etapa]??0;
+  const col=document.getElementById(`col-${idx}`);
+  if(!col)return;
+  const c=document.createElement('div');
+  c.className='kcard';
+  c.dataset.id=p.id;
+  c.draggable=true;
+  if(sc)c.style.setProperty('--kcard-seg',sc.cssVar);
+  c.innerHTML=`
+    <div class="kcard-name">${p.nombre}</div>
+    <div class="kcard-meta">${p.segmento||'—'} — ${p.pais||'—'}</div>
+    ${p.email?`<div class="kcard-email">${p.email}</div>`:''}
+    ${si?`<div class="kcard-social">${si}</div>`:''}
+    <div class="kcard-badges">${sc?`<span class="kb-tag" style="background:${sc.bg};color:${sc.hex}">${p.segmento}</span>`:''}${p.fuente?`<span class="kb-tag" style="background:rgba(148,163,184,.12);color:#94a3b8">${fuenteLabel[p.fuente]||p.fuente}</span>`:''}${p.secuencia_estado==='activa'?`<span class="kb-tag" style="background:rgba(0,212,170,.12);color:#00d4aa">⚡ Secuencia activa</span>`:''}</div>`;
+  c.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',p.id);c.classList.add('dragging')});
+  c.addEventListener('dragend',()=>c.classList.remove('dragging'));
+  col.appendChild(c);
+  updateCnts();
+  updateDashboard();
+}
+
+// ── Update column counters ────────────────────────────────
+function updateCnts(){
+  for(let i=0;i<5;i++){
+    const col=document.getElementById(`col-${i}`);
+    const cnt=document.getElementById(`cnt-${i}`);
+    if(col&&cnt)cnt.textContent=col.children.length;
+  }
+}
+
+// ── Drag-and-drop on columns ──────────────────────────────
+const etapas=['Prospecto','Contactado','Demo / Reunion','Propuesta','Cerrado'];
+document.querySelectorAll('.kc').forEach((kc,i)=>{
+  const col=document.getElementById(`col-${i}`);
+  if(!col)return;
+  kc.addEventListener('dragover',e=>{e.preventDefault();kc.classList.add('drag-over')});
+  kc.addEventListener('dragleave',()=>kc.classList.remove('drag-over'));
+  kc.addEventListener('drop',async e=>{
+    e.preventDefault();
+    kc.classList.remove('drag-over');
+    const id=e.dataTransfer.getData('text/plain');
+    const card=document.querySelector(`.kcard[data-id="${id}"]`);
+    if(!card||!col)return;
+    col.appendChild(card);
+    updateCnts();
+    updateDashboard();
+    // Update cache etapa
+    const cp=prospectsCache.find(x=>x.id==id);
+    if(cp)cp.etapa=etapas[i];
+    await db.from('prospects').update({etapa:etapas[i],updated_at:new Date().toISOString()}).eq('id',id);
+  });
+});
+
+// ── Load prospects from Supabase ──────────────────────────
+async function loadProspects(){
+  const{data,error}=await db.from('prospects').select('*').order('created_at',{ascending:true});
+  if(error){console.error('Error cargando prospectos:',error);return;}
+  prospectsCache = data || [];
+  prospectsCache.forEach(renderCard);
+  updateDashboard();
+}
+
+// ── Add prospect ──────────────────────────────────────────
+async function addP(){
+  const nom=document.getElementById('p-nom').value.trim();
+  const email=document.getElementById('p-email').value.trim();
+  const seg=document.getElementById('p-seg').value;
+  const social=document.getElementById('p-social').value;
+  const pais=document.getElementById('p-pais').value.trim();
+  const pri=document.getElementById('p-pri').value;
+  const notas=document.getElementById('p-notas').value.trim();
+  if(!nom){alert('Ingresa el nombre');return;}
+  const btn=document.querySelector('#p-pipeline .btn-p');
+  btn.textContent='Guardando...';btn.disabled=true;
+  const{data,error}=await db.from('prospects').insert({
+    nombre:nom, email:email||null, segmento:seg||null,
+    social:social||null, pais:pais||null, prioridad:pri,
+    notas:notas||null, etapa:'Prospecto', fuente:'manual'
+  }).select().single();
+  btn.textContent='Agregar al Pipeline';btn.disabled=false;
+  if(error){alert('Error al guardar: '+error.message);console.error(error);return;}
+  prospectsCache.push(data);
+  renderCard(data);
+  ['p-nom','p-email','p-pais','p-notas'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('p-seg').value='';
+  document.getElementById('p-social').value='';
+}
+
+function genContact(){
+  const nom=document.getElementById('p-nom').value.trim();
+  const seg=document.getElementById('p-seg').value;
+  const pais=document.getElementById('p-pais').value.trim();
+  const map={IB:'ib-linkedin',Academia:'academia-fu',Retail:'retail-arg',Inversionista:'seg-inst','Introducing Brokers':'ib-linkedin','Academias de Trading':'academia-fu','Traders Retail':'retail-arg','Inversores Individuales':'seg-inst','Fondos de Inversión':'seg-inst','Networkers / Referidores':'ib-linkedin'};
+  sp(map[seg]||'ib-linkedin',{nombre:nom,pais});
+}
+
+document.getElementById('modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeM()});
+
+// ── CORREOS section ───────────────────────────────────────
+let selectedEmails = new Set(); // Set of prospect ids selected
+
+function getCorreosData(){
+  const segFilter = document.getElementById('correos-seg-filter').value;
+  return prospectsCache.filter(p=>{
+    if(!p.email)return false;
+    if(segFilter && p.segmento!==segFilter)return false;
+    return true;
+  });
+}
+
+function renderCorreosTable(){
+  const rows = getCorreosData();
+  const tbody = document.getElementById('correos-tbody');
+  const empty = document.getElementById('correos-empty');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  if(rows.length===0){
+    if(empty)empty.style.display='block';
+    return;
+  }
+  if(empty)empty.style.display='none';
+  rows.forEach(p=>{
+    const sc=segColor[p.segmento];
+    const badgeStyle=sc?`background:${sc.bg};color:${sc.hex}`:'';
+    const checked=selectedEmails.has(p.id)?'checked':'';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><input type="checkbox" data-id="${p.id}" ${checked} onchange="correoCheckChange(this)" title="Seleccionar"></td>
+      <td style="font-weight:500;color:var(--t1)">${p.nombre}</td>
+      <td>${p.email}</td>
+      <td>${sc?`<span class="seg-badge" style="${badgeStyle}">${p.segmento}</span>`:(p.segmento||'—')}</td>
+      <td>${p.etapa||'—'}</td>
+      <td>${p.pais||'—'}</td>`;
+    tbody.appendChild(tr);
+  });
+  updateCorreosSelBar();
+}
+
+function correoCheckChange(chk){
+  const id=parseInt(chk.dataset.id)||chk.dataset.id;
+  if(chk.checked)selectedEmails.add(chk.dataset.id);
+  else selectedEmails.delete(chk.dataset.id);
+  updateCorreosSelBar();
+}
+
+function correoToggleAll(checked){
+  const rows=getCorreosData();
+  rows.forEach(p=>{
+    if(checked)selectedEmails.add(String(p.id));
+    else selectedEmails.delete(String(p.id));
+  });
+  renderCorreosTable();
+}
+
+function correoSelectAll(){
+  document.getElementById('chk-all').checked=true;
+  correoToggleAll(true);
+}
+
+function correoDeselectAll(){
+  selectedEmails.clear();
+  const chkAll=document.getElementById('chk-all');
+  if(chkAll)chkAll.checked=false;
+  renderCorreosTable();
+}
+
+function updateCorreosSelBar(){
+  const bar=document.getElementById('correos-sel-bar');
+  const cnt=document.getElementById('correos-sel-count');
+  if(!bar||!cnt)return;
+  if(selectedEmails.size>0){
+    bar.style.display='flex';
+    cnt.textContent=`${selectedEmails.size} correo${selectedEmails.size!==1?'s':''} seleccionado${selectedEmails.size!==1?'s':''}`;
+  } else {
+    bar.style.display='none';
+  }
+}
+
+function correoUsarEnCampana(){
+  if(selectedEmails.size===0){
+    alert('Selecciona al menos un correo primero.');
+    return;
+  }
+  // Navigate to reuniones tab with pre-selected prospect info
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
+  document.querySelector('[data-t="reuniones"]').classList.add('on');
+  document.getElementById('p-reuniones').classList.add('on');
+  // Pre-fill first selected prospect's name if available
+  const firstId=Array.from(selectedEmails)[0];
+  const prospect=prospectsCache.find(p=>String(p.id)===String(firstId));
+  openReunionModal(null, prospect);
+}
+
+// ── REUNIONES section ─────────────────────────────────────
+const SEG_COLORS = {
+  'IB':          {hex:'#38bdf8', bg:'rgba(56,189,248,.12)'},
+  'Academia':    {hex:'#22c55e', bg:'rgba(34,197,94,.12)'},
+  'Retail':      {hex:'#a855f7', bg:'rgba(168,85,247,.12)'},
+  'Inversionista':{hex:'#f97316',bg:'rgba(249,115,22,.12)'},
+  'Networker':   {hex:'#00d4aa', bg:'rgba(0,212,170,.12)'},
+  'Fondo':       {hex:'#0ea5e9', bg:'rgba(14,165,233,.12)'}
+};
+
+function getReuniones(){
+  try{return JSON.parse(localStorage.getItem('eltf-reuniones')||'[]');}
+  catch{return [];}
+}
+
+function saveReuniones(arr){
+  localStorage.setItem('eltf-reuniones',JSON.stringify(arr));
+}
+
+function importPendingMeetings(){
+  try{
+    const raw=localStorage.getItem('pending_meetings');
+    if(!raw)return;
+    const pending=JSON.parse(raw);
+    if(!Array.isArray(pending)||pending.length===0){localStorage.removeItem('pending_meetings');return;}
+    const existing=getReuniones();
+    pending.forEach(m=>{
+      existing.push({
+        id: Date.now()+Math.random(),
+        nombre: m.nombre||m.name||'',
+        email:  m.email||'',
+        segmento: m.segmento||m.segment||'',
+        fecha:  m.fecha||m.date||'',
+        hora:   m.hora||m.time||'',
+        tipo:   m.tipo||m.type||'Descubrimiento',
+        estado: m.estado||m.status||'Pendiente',
+        notas:  m.notas||m.notes||''
+      });
+    });
+    saveReuniones(existing);
+    localStorage.removeItem('pending_meetings');
+  }catch(e){console.error('Error importing pending_meetings',e);}
+}
+
+function renderReuniones(){
+  const estadoFilter=document.getElementById('reun-filter-estado')?.value||'';
+  const segFilter=document.getElementById('reun-filter-seg')?.value||'';
+  let data=getReuniones();
+
+  // Count for summary cards (before filters)
+  const all=data;
+  document.getElementById('reun-cnt-pendiente').textContent=all.filter(r=>r.estado==='Pendiente').length;
+  document.getElementById('reun-cnt-confirmada').textContent=all.filter(r=>r.estado==='Confirmada').length;
+  document.getElementById('reun-cnt-realizada').textContent=all.filter(r=>r.estado==='Realizada').length;
+
+  // Apply filters
+  if(estadoFilter)data=data.filter(r=>r.estado===estadoFilter);
+  if(segFilter)data=data.filter(r=>r.segmento===segFilter);
+
+  const tbody=document.getElementById('reun-tbody');
+  const empty=document.getElementById('reun-empty');
+  if(!tbody)return;
+  tbody.innerHTML='';
+
+  if(data.length===0){
+    if(empty)empty.style.display='block';
+    return;
+  }
+  if(empty)empty.style.display='none';
+
+  // Sort by date desc (most recent first)
+  data.sort((a,b)=>{
+    const da=a.fecha?new Date(a.fecha+' '+(a.hora||'00:00')):new Date(0);
+    const db=b.fecha?new Date(b.fecha+' '+(b.hora||'00:00')):new Date(0);
+    return db-da;
+  });
+
+  data.forEach(r=>{
+    const sc=SEG_COLORS[r.segmento];
+    const segStyle=sc?`background:${sc.bg};color:${sc.hex}`:'background:var(--bg-hover);color:var(--t3)';
+    const statusClass={'Pendiente':'rs-pendiente','Confirmada':'rs-confirmada','Realizada':'rs-realizada','Cancelada':'rs-cancelada'}[r.estado]||'rs-pendiente';
+    const fechaFmt=r.fecha?new Date(r.fecha+'T00:00:00').toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'}):'—';
+    const tr=document.createElement('tr');
+    const nextEstado={'Pendiente':'Confirmada','Confirmada':'Realizada','Realizada':null,'Cancelada':null}[r.estado];
+    const nextLabel={'Pendiente':'✓ Confirmar','Confirmada':'✓ Realizada'}[r.estado]||'';
+    tr.innerHTML=`
+      <td style="font-weight:500;color:var(--t1)">${escHtml(r.nombre||'—')}</td>
+      <td style="font-size:12px;line-height:1.5;color:var(--t2)">
+        ${r.email?`<div>${escHtml(r.email)}</div>`:''}
+        ${r.telefono?`<div style="color:var(--t3)">${escHtml(r.telefono)}</div>`:''}
+        ${!r.email&&!r.telefono?'—':''}
+      </td>
+      <td>${r.segmento?`<span class="seg-badge" style="${segStyle}">${escHtml(r.segmento)}</span>`:'—'}</td>
+      <td style="white-space:nowrap">${fechaFmt}</td>
+      <td style="white-space:nowrap">${r.hora||'—'}</td>
+      <td><span class="reun-tipo-badge">${escHtml(r.tipo||'—')}</span></td>
+      <td><span class="reun-status-badge ${statusClass}">${escHtml(r.estado||'—')}</span></td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--t3)" title="${escHtml(r.notas||'')}">${escHtml(r.notas||'—')}</td>
+      <td style="white-space:nowrap;display:flex;gap:4px;flex-wrap:wrap">
+        ${nextEstado?`<button class="reun-act-btn" style="background:var(--accent);color:#000;font-weight:700" onclick="avanzarEstadoReunion('${r.id}','${nextEstado}')">${nextLabel}</button>`:''}
+        <button class="reun-act-btn" onclick="openReunionModal('${r.id}')">Editar</button>
+        <button class="reun-act-btn del" onclick="deleteReunion('${r.id}')">Eliminar</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function avanzarEstadoReunion(id, nuevoEstado){
+  const reuniones=getReuniones();
+  const idx=reuniones.findIndex(r=>String(r.id)===String(id));
+  if(idx===-1)return;
+  reuniones[idx].estado=nuevoEstado;
+  localStorage.setItem('eltf-reuniones',JSON.stringify(reuniones));
+  renderReuniones();
+}
+
+function escHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let editingReunionId=null;
+
+function openReunionModal(id=null, preProspect=null){
+  editingReunionId=id;
+  const titleEl=document.getElementById('modal-reunion-title');
+  if(id){
+    titleEl.textContent='Editar Reunion';
+    const r=getReuniones().find(x=>String(x.id)===String(id));
+    if(r){
+      document.getElementById('reun-nombre').value=r.nombre||'';
+      document.getElementById('reun-email').value=r.email||'';
+      document.getElementById('reun-seg').value=r.segmento||'';
+      document.getElementById('reun-fecha').value=r.fecha||'';
+      document.getElementById('reun-hora').value=r.hora||'';
+      document.getElementById('reun-tipo').value=r.tipo||'Descubrimiento';
+      document.getElementById('reun-estado').value=r.estado||'Pendiente';
+      document.getElementById('reun-notas').value=r.notas||'';
+    }
+  } else {
+    titleEl.textContent='Nueva Reunion';
+    document.getElementById('reun-nombre').value=preProspect?preProspect.nombre||'':'';
+    document.getElementById('reun-email').value=preProspect?preProspect.email||'':'';
+    document.getElementById('reun-seg').value=preProspect?preProspect.segmento||'':'';
+    document.getElementById('reun-fecha').value='';
+    document.getElementById('reun-hora').value='';
+    document.getElementById('reun-tipo').value='Descubrimiento';
+    document.getElementById('reun-estado').value='Pendiente';
+    document.getElementById('reun-notas').value='';
+  }
+  document.getElementById('modal-reunion').classList.add('open');
+}
+
+function closeReunionModal(){
+  document.getElementById('modal-reunion').classList.remove('open');
+  editingReunionId=null;
+}
+
+async function guardarReunion(){
+  const nombre=document.getElementById('reun-nombre').value.trim();
+  if(!nombre){alert('Ingresa el nombre del prospecto.');return;}
+  let reuniones=getReuniones();
+  const existing=editingReunionId?reuniones.find(r=>String(r.id)===String(editingReunionId)):null;
+  const obj={
+    id: editingReunionId||Date.now()+Math.random(),
+    supabase_id: existing?.supabase_id||null,
+    telefono: existing?.telefono||'',
+    nombre,
+    email:   document.getElementById('reun-email').value.trim(),
+    segmento:document.getElementById('reun-seg').value,
+    fecha:   document.getElementById('reun-fecha').value,
+    hora:    document.getElementById('reun-hora').value,
+    tipo:    document.getElementById('reun-tipo').value,
+    estado:  document.getElementById('reun-estado').value,
+    notas:   document.getElementById('reun-notas').value.trim()
+  };
+  // Sync date/time changes to Supabase so landing page reflects them
+  if(obj.supabase_id&&existing&&(existing.fecha!==obj.fecha||existing.hora!==obj.hora)){
+    await db.from('bookings').update({date:obj.fecha,time:obj.hora}).eq('id',obj.supabase_id);
+  }
+  if(editingReunionId){
+    const idx=reuniones.findIndex(r=>String(r.id)===String(editingReunionId));
+    if(idx>=0)reuniones[idx]=obj;
+    else reuniones.push(obj);
+  } else {
+    reuniones.push(obj);
+  }
+  saveReuniones(reuniones);
+  closeReunionModal();
+  renderReuniones();
+}
+
+async function deleteReunion(id){
+  if(!confirm('Eliminar esta reunión?'))return;
+  const reunion=getReuniones().find(r=>String(r.id)===String(id));
+  // If this booking came from the landing page, also delete from Supabase
+  if(reunion&&reunion.supabase_id){
+    await db.from('bookings').delete().eq('id',reunion.supabase_id);
+  }
+  const reuniones=getReuniones().filter(r=>String(r.id)!==String(id));
+  saveReuniones(reuniones);
+  renderReuniones();
+}
+
+async function loadBookingsFromSupabase(){
+  const{data,error}=await db.from('bookings').select('*').order('date',{ascending:true});
+  if(error||!data)return;
+  const existing=getReuniones();
+  const supabaseIds=new Set(data.map(b=>b.id));
+
+  // Remove local entries whose supabase_id no longer exists in DB
+  const synced=existing.filter(r=>!r.supabase_id||supabaseIds.has(r.supabase_id));
+
+  // Add entries that exist in DB but not locally
+  const localSupaIds=new Set(synced.filter(r=>r.supabase_id).map(r=>r.supabase_id));
+  data.forEach(b=>{
+    if(localSupaIds.has(b.id))return;
+    synced.push({
+      id:'supa_'+b.id,
+      supabase_id:b.id,
+      nombre:b.name||'',
+      email:b.email||'',
+      telefono:b.phone||'',
+      segmento:'',
+      fecha:b.date||'',
+      hora:b.time||'',
+      tipo:'Descubrimiento',
+      estado:b.status==='confirmed'?'Confirmada':'Pendiente',
+      notas:b.zoom_link?'Zoom: '+b.zoom_link:''
+    });
+  });
+
+  saveReuniones(synced);
+  renderReuniones();
+}
+
+document.getElementById('modal-reunion').addEventListener('click',e=>{
+  if(e.target===e.currentTarget)closeReunionModal();
+});
+
+// ── Init (solo tras autenticarse con Supabase Auth) ───────
+let appStarted=false;
+function startApp(){
+  if(appStarted)return;
+  appStarted=true;
+  document.getElementById('auth-gate').style.display='none';
+  importPendingMeetings();
+  loadProspects().then(()=>{
+    renderReuniones();
+    loadBookingsFromSupabase();
+  });
+  subscribeBookingsRealtime();
+}
+
+// ── Auth gate ──────────────────────────────────────────────
+document.getElementById('auth-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const btn=document.getElementById('auth-btn');
+  const err=document.getElementById('auth-error');
+  err.style.display='none';
+  btn.disabled=true;
+  const{error}=await db.auth.signInWithPassword({
+    email:document.getElementById('auth-email').value.trim(),
+    password:document.getElementById('auth-pass').value
+  });
+  btn.disabled=false;
+  if(error){
+    err.textContent='Credenciales incorrectas.';
+    err.style.display='block';
+    return;
+  }
+  startApp();
+});
+
+db.auth.getSession().then(({data})=>{
+  if(data&&data.session)startApp();
+  else setTimeout(()=>{const i=document.getElementById('auth-email');if(i)i.focus();},100);
+});
+
+// ── Realtime: show new bookings as they arrive ─────────────
+function subscribeBookingsRealtime(){
+db.channel('crm-bookings')
+  .on('postgres_changes',{event:'INSERT',schema:'public',table:'bookings'},payload=>{
+    const b=payload.new;
+    const existing=getReuniones();
+    const alreadyIn=existing.some(r=>r.supabase_id===b.id);
+    if(alreadyIn)return;
+    existing.push({
+      id:'supa_'+b.id,
+      supabase_id:b.id,
+      nombre:b.name||'',
+      email:b.email||'',
+      telefono:b.phone||'',
+      segmento:'',
+      fecha:b.date||'',
+      hora:b.time||'',
+      tipo:'Descubrimiento',
+      estado:b.status==='confirmed'?'Confirmada':'Pendiente',
+      notas:b.zoom_link?'Zoom: '+b.zoom_link:''
+    });
+    saveReuniones(existing);
+    renderReuniones();
+  })
+  .subscribe();
+}
+</script>
+</body>
+</html>

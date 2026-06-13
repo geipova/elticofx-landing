@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://elticofx.com/sitemap-index.xml

@@ -1,0 +1,84 @@
+---
+import { getCollection, render } from 'astro:content';
+import BlogLayout from '../../layouts/BlogLayout.astro';
+import IBCalculator from '../../components/IBCalculator.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const dateFormatter = new Intl.DateTimeFormat('es-419', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+
+const faqSchema = post.data.faq?.length ? {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: post.data.faq.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+} : null;
+---
+
+<BlogLayout
+  title={`${post.data.title} | El Tico FX`}
+  description={post.data.description}
+  image={post.data.image}
+  type="article"
+  pubDate={post.data.pubDate}
+  updatedDate={post.data.updatedDate}
+>
+  {faqSchema && (
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  )}
+  <article>
+    <header class="post-hero">
+      <div class="container">
+        <a href="/blog/" class="post-hero__back">&larr; Volver al blog</a>
+        <h1 class="post-hero__title">{post.data.title}</h1>
+        <div class="post-hero__meta">
+          <span>{dateFormatter.format(post.data.pubDate)}</span>
+          {post.data.updatedDate && (
+            <span>· Actualizado el {dateFormatter.format(post.data.updatedDate)}</span>
+          )}
+        </div>
+        <div class="post-hero__tags">
+          {post.data.tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      </div>
+    </header>
+
+    <div class="post-content">
+      <Content />
+    </div>
+
+    {post.data.calculator && <IBCalculator />}
+
+    <div class="post-cta">
+      <div class="post-cta__box">
+        <h3>¿Hablamos de tu cuenta en VT Markets?</h3>
+        <p>
+          Agendá una llamada de 20 minutos con Geiner Porras, BDM de VT Markets para LATAM,
+          y resolvé tus dudas sobre regulación, cuentas, plataformas o el programa de IB.
+        </p>
+        <a href="/#agendar" class="btn btn-primary">Agendar reunión</a>
+      </div>
+    </div>
+  </article>
+</BlogLayout>

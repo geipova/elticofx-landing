@@ -1,0 +1,112 @@
+---
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  type?: 'website' | 'article';
+  pubDate?: Date;
+  updatedDate?: Date;
+}
+
+const {
+  title,
+  description,
+  image = '/img/og-elticofx.jpg',
+  type = 'website',
+  pubDate,
+  updatedDate,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const imageURL = new URL(image, Astro.site);
+const logoURL = new URL('/logo.png', Astro.site);
+
+const articleSchema = type === 'article' ? {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title.replace(/\s*\|\s*El Tico FX$/, ''),
+  description,
+  image: imageURL.toString(),
+  datePublished: pubDate?.toISOString(),
+  dateModified: (updatedDate ?? pubDate)?.toISOString(),
+  author: {
+    '@type': 'Person',
+    name: 'Geiner Porras',
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'El Tico FX',
+    logo: {
+      '@type': 'ImageObject',
+      url: logoURL.toString(),
+    },
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': canonicalURL.toString(),
+  },
+} : null;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <link rel="canonical" href={canonicalURL} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={imageURL} />
+    <meta property="og:locale" content="es_419" />
+    <meta property="og:site_name" content="El Tico FX" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageURL} />
+
+    {pubDate && <meta property="article:published_time" content={pubDate.toISOString()} />}
+    {updatedDate && <meta property="article:modified_time" content={updatedDate.toISOString()} />}
+
+    {articleSchema && (
+      <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+    )}
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NP0MZT94CD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(...args: any[]) {
+        // @ts-ignore
+        dataLayer.push(arguments);
+      }
+      // @ts-ignore
+      gtag('js', new Date());
+      // @ts-ignore
+      gtag('config', 'G-NP0MZT94CD');
+    </script>
+  </head>
+  <body>
+    <Navbar />
+    <slot />
+    <Footer />
+  </body>
+</html>

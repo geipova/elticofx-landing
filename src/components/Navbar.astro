@@ -1,0 +1,70 @@
+---
+const path = Astro.url.pathname;
+const isBlog = path.startsWith('/blog');
+---
+
+<nav class="navbar" id="navbar" role="navigation" aria-label="Navegación principal">
+  <div class="navbar__bar">
+    <div class="container">
+      <div class="navbar__inner">
+        <a href="/" class="navbar__logo" aria-label="El Tico FX inicio">
+          <img src="/logo.png" alt="El Tico FX" style="height:28px;width:auto;display:block;" />
+        </a>
+
+        <ul class="navbar__links" role="list">
+          <li><a href="/#beneficios">Beneficios</a></li>
+          <li><a href="/#segmentos">Segmentos</a></li>
+          <li><a href="/#sobre-mi">Sobre mí</a></li>
+          <li><a href="/#plataformas">Plataformas</a></li>
+          <li><a href="/blog/" class={isBlog ? 'active' : ''}>Blog</a></li>
+          <li><a href="/#agendar">Agendar</a></li>
+        </ul>
+
+        <div class="navbar__cta">
+          <a
+            href="https://www.vtmarkets.net/es/trade-now/?affid=NBMTMzMTI0Mg=="
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            class="btn btn-primary"
+          >
+            Abrir cuenta demo
+          </a>
+        </div>
+
+        <button class="navbar__hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="navbar__mobile" id="mobile-menu" role="menu">
+    <a href="/#beneficios" role="menuitem">Beneficios</a>
+    <a href="/#segmentos" role="menuitem">Segmentos</a>
+    <a href="/#sobre-mi" role="menuitem">Sobre mí</a>
+    <a href="/#plataformas" role="menuitem">Plataformas</a>
+    <a href="/blog/" role="menuitem" class={isBlog ? 'active' : ''}>Blog</a>
+    <a href="/#agendar" role="menuitem">Agendar reunión</a>
+    <a
+      href="https://www.vtmarkets.net/es/trade-now/?affid=NBMTMzMTI0Mg=="
+      target="_blank"
+      rel="noopener noreferrer sponsored"
+      role="menuitem"
+      style="color:var(--accent);font-weight:600;"
+    >
+      Abrir cuenta demo
+    </a>
+  </div>
+</nav>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  hamburger?.addEventListener('click', () => {
+    const isOpen = mobileMenu?.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', String(Boolean(isOpen)));
+  });
+</script>
