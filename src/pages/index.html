@@ -1356,6 +1356,133 @@
     }
 
     /* ============================================================
+       ANÁLISIS DIARIOS — lista de descargas
+    ============================================================ */
+    .analisis-list-wrap {
+      max-width: 520px;
+      margin: 28px auto 0;
+    }
+
+    .analisis-list-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--t3);
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .analisis-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .analisis-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: var(--bg-surf);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+
+    .analisis-item__info {
+      min-width: 0;
+    }
+
+    .analisis-item__date {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .analisis-item__title {
+      font-size: 14px;
+      color: var(--t1);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .analisis-item__btn {
+      flex-shrink: 0;
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid rgba(0, 212, 170, 0.35);
+      border-radius: 8px;
+      padding: 9px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition);
+      white-space: nowrap;
+    }
+
+    .analisis-item__btn:hover {
+      background: var(--accent);
+      color: #070910;
+    }
+
+    .analisis-empty {
+      text-align: center;
+      font-size: 14px;
+      color: var(--t3);
+      padding: 8px 0;
+    }
+
+    .analisis-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .analisis-pagination__btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--bg-surf);
+      color: var(--t2);
+      cursor: pointer;
+      transition: border-color var(--transition), color var(--transition);
+    }
+
+    .analisis-pagination__btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .analisis-pagination__btn:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+    .analisis-pagination__label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--t3);
+      letter-spacing: 0.04em;
+      min-width: 64px;
+      text-align: center;
+    }
+
+    /* ============================================================
        SECTION HEADER (reusable layout)
     ============================================================ */
     .section-header {
@@ -2940,6 +3067,7 @@
             <li><a href="#segmentos">Segmentos</a></li>
             <li><a href="#sobre-mi">Sobre m&#237;</a></li>
             <li><a href="#plataformas">Plataformas</a></li>
+            <li><a href="#newsletter">Newsletter</a></li>
             <li><a href="/blog/">Blog</a></li>
             <li><a href="#agendar">Agendar</a></li>
             <li><a href="#" class="nav-crm-link" id="open-login-modal">CRM</a></li>
@@ -2974,6 +3102,7 @@
       <a href="#segmentos" role="menuitem">Segmentos</a>
       <a href="#sobre-mi" role="menuitem">Sobre m&#237;</a>
       <a href="#plataformas" role="menuitem">Plataformas</a>
+      <a href="#newsletter" role="menuitem">Newsletter</a>
       <a href="/blog/" role="menuitem">Blog</a>
       <a href="#agendar" role="menuitem">Agendar reuni&#243;n</a>
       <a href="https://www.vtmarkets.net/es/trade-now/?affid=NBMTMzMTI0Mg==" target="_blank"
@@ -3925,6 +4054,58 @@
     </div>
   </div>
 
+  <!-- ============================================================
+       MODAL: descarga de análisis (nombre + correo, una sola vez)
+  ============================================================ -->
+  <div id="download-modal"
+    style="display:none;position:fixed;inset:0;z-index:9000;align-items:center;justify-content:center;padding:20px">
+    <div id="dm-overlay" style="position:absolute;inset:0;background:rgba(7,9,16,0.85);backdrop-filter:blur(4px)"></div>
+    <div
+      style="position:relative;z-index:1;background:#0e1117;border:1px solid #1a2130;border-radius:20px;padding:36px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,0.6)">
+      <button id="dm-close" aria-label="Cerrar"
+        style="position:absolute;top:16px;right:16px;background:none;border:none;color:#475569;font-size:22px;cursor:pointer;line-height:1">&times;</button>
+
+      <p style="color:#00d4aa;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin:0 0 10px">
+        Análisis diario
+      </p>
+      <h3 style="font-family:'Cuaniex Trial','DM Sans',sans-serif;font-size:22px;font-weight:800;color:#f0f4f8;margin:0 0 10px;line-height:1.25">
+        Dejanos tu nombre y correo para descargar
+      </h3>
+      <p style="color:#94a3b8;font-size:14px;margin:0 0 22px;line-height:1.6">
+        Lo pedimos una sola vez. Las próximas descargas son directas.
+      </p>
+
+      <form id="dm-form" novalidate>
+        <input type="text" name="hp" id="dm-hp" tabindex="-1" autocomplete="off"
+          style="position:absolute;left:-9999px;height:0;width:0;border:0;padding:0" aria-hidden="true" />
+        <div style="margin-bottom:14px">
+          <label for="dm-name"
+            style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Tu
+            nombre</label>
+          <input id="dm-name" type="text" placeholder="Ej: Carlos Méndez" required autocomplete="name"
+            style="width:100%;background:#131820;border:1px solid #1a2130;border-radius:10px;padding:12px 14px;color:#f0f4f8;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.2s"
+            onfocus="this.style.borderColor='#00d4aa'" onblur="this.style.borderColor='#1a2130'" />
+        </div>
+        <div style="margin-bottom:20px">
+          <label for="dm-email"
+            style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Tu
+            correo</label>
+          <input id="dm-email" type="email" placeholder="tu@correo.com" required autocomplete="email"
+            style="width:100%;background:#131820;border:1px solid #1a2130;border-radius:10px;padding:12px 14px;color:#f0f4f8;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.2s"
+            onfocus="this.style.borderColor='#00d4aa'" onblur="this.style.borderColor='#1a2130'" />
+        </div>
+        <p id="dm-error" style="display:none;color:#ef4444;font-size:13px;margin:0 0 14px"></p>
+        <button type="submit" id="dm-submit"
+          style="width:100%;background:#00d4aa;color:#070910;font-family:'Cuaniex Trial','DM Sans',sans-serif;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:14px;cursor:pointer;transition:opacity 0.2s">
+          Descargar PDF
+        </button>
+        <p style="color:#475569;font-size:11.5px;margin:12px 0 0;text-align:center;line-height:1.5">
+          Sin spam. Te suscribimos al an&aacute;lisis diario. Pod&eacute;s darte de baja cuando quieras.
+        </p>
+      </form>
+    </div>
+  </div>
+
   <script>
     (function () {
       var LEAD_FN = 'https://bwbyjhotaudunqpaiqjv.supabase.co/functions/v1/capture-lead';
@@ -4129,6 +4310,18 @@
           Sin spam. Solo an&#225;lisis real. Pod&#233;s darte de baja cuando quieras.
         </p>
 
+      </div>
+
+      <div class="analisis-list-wrap fade-in fade-delay-3">
+        <p class="analisis-list-title">An&#225;lisis disponibles para descargar</p>
+        <div id="analisis-list" class="analisis-list">
+          <p class="analisis-empty">Cargando...</p>
+        </div>
+        <div id="analisis-pagination" class="analisis-pagination" style="display:none">
+          <button type="button" id="analisis-prev" class="analisis-pagination__btn" aria-label="Más recientes">&#9650;</button>
+          <span id="analisis-page-label" class="analisis-pagination__label"></span>
+          <button type="button" id="analisis-next" class="analisis-pagination__btn" aria-label="Más antiguos">&#9660;</button>
+        </div>
       </div>
 
     </div>
@@ -4405,6 +4598,198 @@
             btn.disabled = false;
             btn.textContent = 'Suscribirse al análisis diario';
             errorMsg.style.display = 'block';
+          });
+      });
+    })();
+
+
+    // ------------------------------------------------------------------
+    // Análisis diarios: listar y descargar (gated por nombre + correo)
+    // ------------------------------------------------------------------
+    (function () {
+      var listEl = document.getElementById('analisis-list');
+      var modal = document.getElementById('download-modal');
+      if (!listEl || !modal) return;
+
+      var LIST_FN = 'https://bwbyjhotaudunqpaiqjv.supabase.co/functions/v1/list-analisis';
+      var DOWNLOAD_FN = 'https://bwbyjhotaudunqpaiqjv.supabase.co/functions/v1/download-analisis';
+      var STORAGE_KEY = 'elticofx_nl_sub';
+
+      var form = document.getElementById('dm-form');
+      var errorEl = document.getElementById('dm-error');
+      var submitBtn = document.getElementById('dm-submit');
+      var pendingId = null;
+      var _dmLoadTs = Date.now();
+
+      var MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+
+      function formatDate(fecha) {
+        var parts = fecha.split('-');
+        var d = parseInt(parts[2], 10);
+        var m = parseInt(parts[1], 10) - 1;
+        return d + ' ' + MONTHS[m] + ' ' + parts[0];
+      }
+
+      function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      var PAGE_SIZE = 4;
+      var allItems = [];
+      var currentPage = 0;
+
+      var paginationEl = document.getElementById('analisis-pagination');
+      var prevBtn = document.getElementById('analisis-prev');
+      var nextBtn = document.getElementById('analisis-next');
+      var pageLabelEl = document.getElementById('analisis-page-label');
+
+      function renderPage() {
+        var totalPages = Math.ceil(allItems.length / PAGE_SIZE);
+        var start = currentPage * PAGE_SIZE;
+        var pageItems = allItems.slice(start, start + PAGE_SIZE);
+
+        listEl.innerHTML = pageItems.map(function (item) {
+          return '<div class="analisis-item">' +
+            '<div class="analisis-item__info">' +
+              '<div class="analisis-item__date">' + formatDate(item.fecha) + '</div>' +
+              '<div class="analisis-item__title">' + escapeHtml(item.titulo) + '</div>' +
+            '</div>' +
+            '<button type="button" class="analisis-item__btn" data-id="' + item.id + '">Descargar PDF</button>' +
+          '</div>';
+        }).join('');
+
+        if (totalPages > 1) {
+          paginationEl.style.display = 'flex';
+          pageLabelEl.textContent = (currentPage + 1) + ' de ' + totalPages;
+          prevBtn.disabled = currentPage === 0;
+          nextBtn.disabled = currentPage >= totalPages - 1;
+        } else {
+          paginationEl.style.display = 'none';
+        }
+      }
+
+      function renderList(items) {
+        if (!items || items.length === 0) {
+          listEl.innerHTML = '<p class="analisis-empty">Pronto vas a poder descargar el análisis de hoy desde acá.</p>';
+          return;
+        }
+        allItems = items;
+        currentPage = 0;
+        renderPage();
+      }
+
+      prevBtn.addEventListener('click', function () {
+        if (currentPage > 0) { currentPage--; renderPage(); }
+      });
+
+      nextBtn.addEventListener('click', function () {
+        if (currentPage < Math.ceil(allItems.length / PAGE_SIZE) - 1) { currentPage++; renderPage(); }
+      });
+
+      fetch(LIST_FN)
+        .then(function (res) { return res.json(); })
+        .then(function (data) { renderList(data.items); })
+        .catch(function () {
+          listEl.innerHTML = '<p class="analisis-empty">No pudimos cargar los análisis. Intentá más tarde.</p>';
+        });
+
+      function requestDownload(id, name, email, hp, ts) {
+        return fetch(DOWNLOAD_FN, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: id, name: name, email: email, hp: hp || '', ts: ts })
+        }).then(function (res) { return res.json(); });
+      }
+
+      function openModal(id) {
+        pendingId = id;
+        errorEl.style.display = 'none';
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        _dmLoadTs = Date.now();
+        setTimeout(function () { document.getElementById('dm-name').focus(); }, 80);
+      }
+
+      function closeModal() {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+
+      listEl.addEventListener('click', function (e) {
+        var btn = e.target.closest('.analisis-item__btn');
+        if (!btn) return;
+        var id = btn.getAttribute('data-id');
+
+        var saved = null;
+        try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch (err) {}
+
+        if (saved && saved.name && saved.email) {
+          var originalText = btn.textContent;
+          btn.disabled = true;
+          btn.textContent = 'Generando...';
+          requestDownload(id, saved.name, saved.email, '', Date.now() - 3000)
+            .then(function (data) {
+              if (data.ok && data.url) {
+                window.open(data.url, '_blank');
+              } else {
+                throw new Error(data.error || 'error');
+              }
+            })
+            .catch(function () { openModal(id); })
+            .finally(function () {
+              btn.disabled = false;
+              btn.textContent = originalText;
+            });
+        } else {
+          openModal(id);
+        }
+      });
+
+      document.getElementById('dm-close').addEventListener('click', closeModal);
+      document.getElementById('dm-overlay').addEventListener('click', closeModal);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal.style.display === 'flex') closeModal();
+      });
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!pendingId) return;
+
+        var name = document.getElementById('dm-name').value.trim();
+        var email = document.getElementById('dm-email').value.trim();
+        var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        var hp = (document.getElementById('dm-hp') || {}).value || '';
+
+        if (!name || !email || !emailOk) {
+          errorEl.textContent = 'Completá tu nombre y un correo válido.';
+          errorEl.style.display = 'block';
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Generando...';
+        errorEl.style.display = 'none';
+
+        requestDownload(pendingId, name, email, hp, _dmLoadTs)
+          .then(function (data) {
+            if (data.ok && data.url) {
+              try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ name: name, email: email })); } catch (err) {}
+              if (typeof fbq !== 'undefined') fbq('track', 'Lead');
+              window.open(data.url, '_blank');
+              closeModal();
+            } else {
+              throw new Error(data.error || 'error');
+            }
+          })
+          .catch(function () {
+            errorEl.textContent = 'Hubo un problema. Intentá de nuevo en un momento.';
+            errorEl.style.display = 'block';
+          })
+          .finally(function () {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Descargar PDF';
           });
       });
     })();
