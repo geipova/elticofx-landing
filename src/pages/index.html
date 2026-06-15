@@ -1483,39 +1483,53 @@
     }
 
     /* ============================================================
-       POPUP NEWSLETTER — aparece a los 5s
+       POPUP NEWSLETTER — centrado, aparece a los 5s
     ============================================================ */
-    .nl-popup {
+    .nl-popup-overlay {
       position: fixed;
-      bottom: 24px;
-      right: 24px;
+      inset: 0;
       z-index: 8000;
-      max-width: 360px;
-      background: #0e1117;
-      border: 1px solid #1a2130;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
-      transform: translateY(24px) scale(0.96);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(7, 9, 16, 0.85);
+      backdrop-filter: blur(4px);
       opacity: 0;
       pointer-events: none;
-      transition: transform 0.4s ease, opacity 0.4s ease;
+      transition: opacity 0.3s ease;
     }
 
-    .nl-popup--visible {
-      transform: translateY(0) scale(1);
+    .nl-popup-overlay--visible {
       opacity: 1;
       pointer-events: auto;
     }
 
+    .nl-popup {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      background: #0e1117;
+      border: 1px solid #1a2130;
+      border-radius: 20px;
+      padding: 36px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+      transform: translateY(16px) scale(0.97);
+      transition: transform 0.3s ease;
+    }
+
+    .nl-popup-overlay--visible .nl-popup {
+      transform: translateY(0) scale(1);
+    }
+
     .nl-popup__close {
       position: absolute;
-      top: 12px;
-      right: 14px;
+      top: 16px;
+      right: 16px;
       background: none;
       border: none;
       color: #475569;
-      font-size: 20px;
+      font-size: 22px;
       cursor: pointer;
       line-height: 1;
     }
@@ -1533,19 +1547,38 @@
 
     .nl-popup__title {
       font-family: 'Cuaniex Trial', 'DM Sans', sans-serif;
-      font-size: 18px;
+      font-size: 22px;
       font-weight: 800;
       color: #f0f4f8;
-      margin: 0 0 8px;
+      margin: 0 0 10px;
       line-height: 1.3;
       padding-right: 16px;
     }
 
     .nl-popup__text {
-      font-size: 13.5px;
+      font-size: 14px;
       color: #94a3b8;
       line-height: 1.6;
-      margin: 0 0 18px;
+      margin: 0 0 22px;
+    }
+
+    .nl-popup__input {
+      width: 100%;
+      background: #131820;
+      border: 1px solid #1a2130;
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #f0f4f8;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+      margin-bottom: 12px;
+    }
+
+    .nl-popup__input:focus {
+      border-color: var(--accent);
     }
 
     .nl-popup__cta {
@@ -1556,10 +1589,10 @@
       color: #070910;
       font-family: 'DM Sans', sans-serif;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 15px;
       border: none;
       border-radius: 10px;
-      padding: 12px;
+      padding: 14px;
       cursor: pointer;
       transition: background var(--transition), transform var(--transition);
     }
@@ -1569,13 +1602,9 @@
       transform: translateY(-1px);
     }
 
-    @media (max-width: 640px) {
-      .nl-popup {
-        left: 16px;
-        right: 16px;
-        bottom: 16px;
-        max-width: none;
-      }
+    .nl-popup__cta:disabled {
+      opacity: 0.6;
+      cursor: default;
     }
 
     /* ============================================================
@@ -4203,16 +4232,36 @@
   </div>
 
   <!-- ============================================================
-       POPUP: newsletter (aparece a los 5s)
+       POPUP: newsletter (centrado, aparece a los 5s)
   ============================================================ -->
-  <div id="nl-popup" class="nl-popup" role="dialog" aria-labelledby="nl-popup-title">
-    <button id="nl-popup-close" class="nl-popup__close" aria-label="Cerrar">&times;</button>
-    <p class="nl-popup__badge">Newsletter gratis</p>
-    <h3 id="nl-popup-title" class="nl-popup__title">&#191;Sab&eacute;s qu&eacute; mueve el mercado hoy?</h3>
-    <p class="nl-popup__text">
-      Recib&iacute; cada ma&ntilde;ana, gratis, un resumen de Forex, &iacute;ndices, oro y petr&oacute;leo &mdash; directo a tu correo.
-    </p>
-    <button type="button" id="nl-popup-cta" class="nl-popup__cta">Suscribirme gratis</button>
+  <div id="nl-popup-overlay" class="nl-popup-overlay">
+    <div id="nl-popup" class="nl-popup" role="dialog" aria-labelledby="nl-popup-title">
+      <button id="nl-popup-close" class="nl-popup__close" aria-label="Cerrar">&times;</button>
+      <p class="nl-popup__badge">Newsletter gratis</p>
+      <h3 id="nl-popup-title" class="nl-popup__title">&#191;Sab&eacute;s qu&eacute; mueve el mercado hoy?</h3>
+      <p class="nl-popup__text">
+        Recib&iacute; cada ma&ntilde;ana, gratis, un resumen de Forex, &iacute;ndices, oro y petr&oacute;leo &mdash; directo a tu correo.
+      </p>
+
+      <form id="nl-popup-form" novalidate>
+        <input type="text" name="website" id="nlp-website" tabindex="-1" autocomplete="off"
+          style="position:absolute;left:-9999px;height:0;width:0;border:0;padding:0" aria-hidden="true" />
+        <input id="nlp-nombre" type="text" class="nl-popup__input" placeholder="Tu nombre" required
+          autocomplete="given-name" />
+        <input id="nlp-email" type="email" class="nl-popup__input" placeholder="tu@correo.com" required
+          autocomplete="email" />
+        <p id="nlp-error" style="display:none;color:#ef4444;font-size:13px;margin:0 0 14px"></p>
+        <button type="submit" id="nlp-submit" class="nl-popup__cta">Suscribirme gratis</button>
+      </form>
+
+      <p id="nlp-success" class="newsletter-success" style="display:none;">
+        &#10003; &#161;Suscripto! Ma&#241;ana recibir&#225;s tu primer an&#225;lisis.
+      </p>
+
+      <p style="color:#475569;font-size:11.5px;margin:14px 0 0;text-align:center;line-height:1.5">
+        Sin spam. Pod&eacute;s darte de baja cuando quieras.
+      </p>
+    </div>
   </div>
 
   <script>
@@ -4717,35 +4766,87 @@
     // Popup newsletter: aparece a los 5s, una vez por visitante
     // ------------------------------------------------------------------
     (function () {
-      var popup = document.getElementById('nl-popup');
-      if (!popup) return;
+      var overlay = document.getElementById('nl-popup-overlay');
+      var form = document.getElementById('nl-popup-form');
+      if (!overlay || !form) return;
 
       var DISMISS_KEY = 'elticofx_nl_popup_dismissed';
       var SUB_KEY = 'elticofx_nl_sub';
+      var NL_FN = 'https://bwbyjhotaudunqpaiqjv.supabase.co/functions/v1/subscribe-newsletter';
 
       try {
         if (localStorage.getItem(DISMISS_KEY) || localStorage.getItem(SUB_KEY)) return;
       } catch (err) {}
 
+      var errorEl = document.getElementById('nlp-error');
+      var successEl = document.getElementById('nlp-success');
+      var submitBtn = document.getElementById('nlp-submit');
+      var _popupLoadTs = Date.now();
+
       function dismiss() {
-        popup.classList.remove('nl-popup--visible');
+        overlay.classList.remove('nl-popup-overlay--visible');
+        document.body.style.overflow = '';
         try { localStorage.setItem(DISMISS_KEY, '1'); } catch (err) {}
       }
 
       setTimeout(function () {
-        popup.classList.add('nl-popup--visible');
+        overlay.classList.add('nl-popup-overlay--visible');
+        document.body.style.overflow = 'hidden';
+        _popupLoadTs = Date.now();
       }, 5000);
 
       document.getElementById('nl-popup-close').addEventListener('click', dismiss);
+      overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) dismiss();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && overlay.classList.contains('nl-popup-overlay--visible')) dismiss();
+      });
 
-      document.getElementById('nl-popup-cta').addEventListener('click', function () {
-        dismiss();
-        var target = document.getElementById('newsletter');
-        if (target) target.scrollIntoView({ behavior: 'smooth' });
-        setTimeout(function () {
-          var nameInput = document.getElementById('nl-nombre');
-          if (nameInput) nameInput.focus();
-        }, 600);
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var nombre = document.getElementById('nlp-nombre').value.trim();
+        var email = document.getElementById('nlp-email').value.trim();
+        var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        var hp = document.getElementById('nlp-website').value || '';
+
+        if (!nombre || !email || !emailOk) {
+          errorEl.textContent = 'Completá tu nombre y un correo válido.';
+          errorEl.style.display = 'block';
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
+        errorEl.style.display = 'none';
+
+        fetch(NL_FN, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: nombre, email: email, hp: hp, ts: _popupLoadTs })
+        })
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            if (data.ok) {
+              if (typeof fbq !== 'undefined') fbq('track', 'Lead');
+              form.style.display = 'none';
+              successEl.style.display = 'block';
+              try {
+                localStorage.setItem(DISMISS_KEY, '1');
+                localStorage.setItem(SUB_KEY, JSON.stringify({ name: nombre, email: email }));
+              } catch (err) {}
+              setTimeout(dismiss, 2500);
+            } else {
+              throw new Error(data.error || 'error');
+            }
+          })
+          .catch(function () {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Suscribirme gratis';
+            errorEl.textContent = 'Hubo un problema. Intentá de nuevo en un momento.';
+            errorEl.style.display = 'block';
+          });
       });
     })();
 
