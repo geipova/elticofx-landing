@@ -3,6 +3,7 @@ title: "Trump vuelve a mover los mercados: qué pasó con Irán y cómo operar e
 description: "Dow, S&P 500, petróleo y oro reaccionaron después de que Trump dijera que el alto el fuego con Irán 'se terminó'. Qué significa esta volatilidad para un trader retail y cómo gestionarla."
 pubDate: 2026-07-09
 segment: "traders-retail"
+image: "/img/og-trump-iran-mercados.jpg"
 tags: ["Trump", "mercados", "petróleo", "oro", "volatilidad", "trading de noticias", "Irán", "XAU/USD", "gestión de riesgo", "forex"]
 faq:
   - question: "¿Por qué sube el oro cuando hay tensión geopolítica?"
