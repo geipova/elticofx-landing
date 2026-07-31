@@ -270,6 +270,42 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
 .correos-sel-bar span{font-size:13px;color:var(--accent);font-weight:600}
 .correos-empty{padding:40px;text-align:center;color:var(--t3);font-size:14px;font-style:italic}
 
+/* ── CAZADOR section (cola de prospeccion social) ── */
+.caz-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.caz-filters{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.caz-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.caz-sc{background:var(--bg-card);border:1px solid var(--border);border-left:3px solid var(--csc-c,var(--accent));border-radius:var(--r-sm);padding:14px 16px}
+.caz-sc-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);font-weight:600;margin-bottom:5px}
+.caz-sc-val{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--t1);line-height:1}
+.caz-sc-pct{font-size:11px;color:var(--t3);margin-top:5px}
+.caz-sc:hover{border-color:var(--csc-c)}
+.caz-ruta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:11px}
+.caz-paso{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--t3);border:1px solid var(--border);border-radius:100px;padding:3px 9px;white-space:nowrap}
+.caz-paso.hecho{color:var(--paso-c);border-color:var(--paso-c);background:color-mix(in srgb,var(--paso-c) 12%,transparent)}
+.caz-flecha{color:var(--t3);font-size:13px;opacity:.5}
+.caz-card.descartado{opacity:.5}
+.caz-msg.caz-falta{border-style:dashed}
+.caz-msg.caz-falta .caz-msg-txt{color:var(--t3);font-style:italic}
+.caz-card.cerrado{border-color:var(--accent)}
+.caz-list{display:flex;flex-direction:column;gap:12px}
+.caz-card{background:var(--bg-card);border:1px solid var(--border);border-left:3px solid var(--caz-seg,var(--accent));border-radius:var(--r-sm);padding:16px 18px}
+.caz-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:9px}
+.caz-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--t1);line-height:1.25}
+.caz-name a{color:inherit;text-decoration:none;border-bottom:1px dotted var(--t3)}
+.caz-name a:hover{color:var(--accent);border-color:var(--accent)}
+.caz-sub{font-size:12px;color:var(--t3);margin-top:3px}
+.caz-score{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;line-height:1;text-align:right}
+.caz-score small{display:block;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-top:3px}
+.caz-bio{font-size:13px;color:var(--t2);line-height:1.55;margin-bottom:11px;font-style:italic}
+.caz-msg{background:var(--bg-surf);border:1px solid var(--border);border-radius:var(--r-sm);padding:11px 13px;margin-bottom:9px}
+.caz-msg-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);font-weight:700;margin-bottom:5px}
+.caz-msg-txt{font-size:13.5px;color:var(--t1);line-height:1.6;white-space:pre-wrap}
+.caz-m2{display:none}
+.caz-m2.on{display:block}
+.caz-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:11px}
+.caz-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.caz-empty{padding:44px;text-align:center;color:var(--t3);font-size:14px;font-style:italic;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-sm)}
+
 /* ── REUNIONES section ── */
 .reun-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
 .reun-filters{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
@@ -342,8 +378,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
     </div>
     <form id="auth-form" autocomplete="off">
       <div class="ag-field">
-        <label for="auth-email">Email</label>
-        <input type="email" id="auth-email" placeholder="bdm@..." required autocomplete="username" />
+        <label for="auth-email">Usuario</label>
+        <input type="text" id="auth-email" placeholder="elticocr" required autocomplete="username" />
       </div>
       <div class="ag-field">
         <label for="auth-pass">Contrase&#241;a</label>
@@ -389,6 +425,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
     <button class="tab on" data-t="dashboard">Dashboard</button>
     <button class="tab" data-t="segmentos">Segmentos</button>
     <button class="tab" data-t="pipeline">Pipeline</button>
+    <button class="tab" data-t="cazador">Cazador</button>
     <button class="tab" data-t="playbook">Playbook</button>
     <button class="tab" data-t="kpis">KPIs</button>
     <button class="tab" data-t="correos">Correos</button>
@@ -543,6 +580,52 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
       </div>
     </div>
 
+    <!-- ═══════════ CAZADOR ═══════════ -->
+    <div class="panel" id="p-cazador">
+      <div class="caz-header">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--t1);margin-bottom:3px">Cazador — cola de prospeccion</div>
+          <div style="font-size:13px;color:var(--t3)">Leads traidos por el agente desde Instagram y LinkedIn, ordenados por score. Copia el M1, enviaselo desde tu cuenta y marcalo.</div>
+        </div>
+        <div class="caz-filters">
+          <select class="correos-filter" id="caz-seg-filter" onchange="renderCazador()">
+            <option value="">Todos los segmentos</option>
+            <option value="Traders Retail">Traders Retail</option>
+            <option value="Introducing Brokers">Introducing Brokers</option>
+            <option value="Academias de Trading">Academias de Trading</option>
+            <option value="Fondos de Inversión">Fondos de Inversión</option>
+            <option value="Networkers / Referidores">Networkers / Referidores</option>
+            <option value="Inversores Individuales">Inversores Individuales</option>
+          </select>
+          <select class="correos-filter" id="caz-red-filter" onchange="renderCazador()">
+            <option value="">Todas las redes</option>
+            <option value="Instagram">Instagram</option>
+            <option value="LinkedIn">LinkedIn</option>
+          </select>
+          <select class="correos-filter" id="caz-estado-filter" onchange="renderCazador()">
+            <option value="activos">Activos (sin cerrar)</option>
+            <option value="falta_m1">Falta redactar M1</option>
+            <option value="sin_contactar">Sin contactar</option>
+            <option value="contactado">M1 enviado</option>
+            <option value="respondio">Respondio</option>
+            <option value="oferta">Oferta enviada</option>
+            <option value="agendo">Agendo llamada</option>
+            <option value="registrado">Registrado</option>
+            <option value="descartados">Descartados</option>
+            <option value="todos">Todos</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Embudo: cada tarjeta filtra la lista al hacer clic -->
+      <div class="caz-summary" id="caz-embudo"></div>
+
+      <div class="caz-list" id="caz-list"></div>
+      <div id="caz-empty" class="caz-empty" style="display:none">
+        No hay leads en la cola. Corre el pipeline del agente (npm run buscar) y cargalos con npm run cargar.
+      </div>
+    </div>
+
     <!-- ═══════════ PLAYBOOK ═══════════ -->
     <div class="panel" id="p-playbook">
       <div class="card" style="margin-bottom:14px">
@@ -665,6 +748,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-h
                 <th>Segmento</th>
                 <th>Etapa</th>
                 <th>Pais</th>
+                <th>Propuesta</th>
               </tr>
             </thead>
             <tbody id="correos-tbody"></tbody>
@@ -874,6 +958,7 @@ document.querySelectorAll('.tab').forEach(b=>{
     b.classList.add('on');
     document.getElementById('p-'+t).classList.add('on');
     if(t==='correos')renderCorreosTable();
+    if(t==='cazador')renderCazador();
   });
 });
 
@@ -957,7 +1042,7 @@ PAGOS
 • Transferencia bancaria, cripto o metodos locales
 • Sin monto minimo de cobro
 
-Revisamos los numeros con tu volumen actual?
+Revisamos los numeros con tu volumen actual? Respondeme o escribime directamente para agendar 20 minutos esta semana.
 [Tu nombre] | VT Markets BDM`},
 'seg-academia':{t:'Propuesta Academia de Trading',c:`PROPUESTA VT MARKETS — PARTNERSHIP EDUCATIVO
 
@@ -1272,7 +1357,8 @@ function renderCard(p){
     <div class="kcard-meta">${p.segmento||'—'} — ${p.pais||'—'}</div>
     ${p.email?`<div class="kcard-email">${p.email}</div>`:''}
     ${si?`<div class="kcard-social">${si}</div>`:''}
-    <div class="kcard-badges">${sc?`<span class="kb-tag" style="background:${sc.bg};color:${sc.hex}">${p.segmento}</span>`:''}${p.fuente?`<span class="kb-tag" style="background:rgba(148,163,184,.12);color:#94a3b8">${fuenteLabel[p.fuente]||p.fuente}</span>`:''}${p.secuencia_estado==='activa'?`<span class="kb-tag" style="background:rgba(0,212,170,.12);color:#00d4aa">⚡ Secuencia activa</span>`:''}</div>`;
+    <div class="kcard-badges">${sc?`<span class="kb-tag" style="background:${sc.bg};color:${sc.hex}">${p.segmento}</span>`:''}${p.fuente?`<span class="kb-tag" style="background:rgba(148,163,184,.12);color:#94a3b8">${fuenteLabel[p.fuente]||p.fuente}</span>`:''}${p.secuencia_estado==='activa'?`<span class="kb-tag" style="background:rgba(0,212,170,.12);color:#00d4aa">⚡ Secuencia activa</span>`:''}</div>
+    ${p.segmento==='Introducing Brokers'&&p.email?`<button class="sg-btn" data-ibp-btn="${p.id}" style="margin-top:9px;padding:7px 10px;font-size:11px" onclick="event.stopPropagation();sendIBProposal('${p.id}')" ${p.propuesta_enviada?'disabled':''}>${p.propuesta_enviada?'✓ Propuesta enviada':'Enviar propuesta'}</button>`:''}`;
   c.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',p.id);c.classList.add('dragging')});
   c.addEventListener('dragend',()=>c.classList.remove('dragging'));
   col.appendChild(c);
@@ -1309,8 +1395,30 @@ document.querySelectorAll('.kc').forEach((kc,i)=>{
     const cp=prospectsCache.find(x=>x.id==id);
     if(cp)cp.etapa=etapas[i];
     await db.from('prospects').update({etapa:etapas[i],updated_at:new Date().toISOString()}).eq('id',id);
+    // Al entrar a "Propuesta", los IB con correo reciben la propuesta automatizada por email
+    if(cp&&etapas[i]==='Propuesta'&&cp.segmento==='Introducing Brokers'&&cp.email&&!cp.propuesta_enviada){
+      sendIBProposal(id);
+    }
   });
 });
+
+// ── Propuesta IB automatizada (MailerLite) ────────────────
+async function sendIBProposal(id){
+  const p=prospectsCache.find(x=>String(x.id)===String(id));
+  if(!p||p.propuesta_enviada)return;
+  const btns=document.querySelectorAll(`[data-ibp-btn="${id}"]`);
+  btns.forEach(b=>{b.disabled=true;b.textContent='Enviando...';});
+  const{data,error}=await db.functions.invoke('send-ib-proposal',{body:{prospect_id:p.id}});
+  if(error||data?.error){
+    console.error('Error enviando propuesta IB:',error||data?.error);
+    alert('No se pudo enviar la propuesta: '+(data?.error||error?.message||'error desconocido'));
+    btns.forEach(b=>{b.disabled=false;b.textContent='Enviar propuesta';});
+    return;
+  }
+  p.propuesta_enviada=true;
+  p.propuesta_enviada_at=new Date().toISOString();
+  btns.forEach(b=>{b.disabled=true;b.textContent='✓ Propuesta enviada';b.style.color='var(--accent)';b.style.fontWeight='700';});
+}
 
 // ── Load prospects from Supabase ──────────────────────────
 async function loadProspects(){
@@ -1357,6 +1465,263 @@ function genContact(){
 
 document.getElementById('modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeM()});
 
+// ── CAZADOR section (pipeline de prospeccion social) ──────
+function cazEsc(s){
+  return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// El embudo. Cada hito guarda su fecha en una columna propia; el estado de un lead
+// es el ultimo hito alcanzado. `etapa` es a que columna del kanban corresponde:
+// al sincronizar se toma siempre la mas avanzada, para que nada retroceda.
+const CAZ_HITOS=[
+  {clave:'m1_enviado_at',    id:'contactado', estado:'M1 enviado',     boton:'Marcar M1 enviado', etapa:'Contactado',     color:'var(--blue)',   nota:p=>`M1 enviado por ${p.social||'red social'}: ${p.m1}`},
+  {clave:'respondio_at',     id:'respondio',  estado:'Respondio',      boton:'Respondio',         etapa:'Contactado',     color:'#22c55e',       nota:()=>'Respondio al M1 — toca adaptar y enviar el M2.'},
+  {clave:'oferta_enviada_at',id:'oferta',     estado:'Oferta enviada', boton:'Oferta enviada',    etapa:'Propuesta',      color:'var(--amber)',  nota:()=>'Propuesta de VT Markets enviada.'},
+  {clave:'agendo_at',        id:'agendo',     estado:'Agendo llamada', boton:'Agendo llamada',    etapa:'Demo / Reunion', color:'#a855f7',       nota:()=>'Videollamada agendada.'},
+  {clave:'registrado_at',    id:'registrado', estado:'Registrado',     boton:'Se registro',       etapa:'Cerrado',        color:'var(--accent)', nota:()=>'Abrio cuenta en VT Markets.'}
+];
+
+/** Ultimo hito alcanzado por un lead, o null si todavia no se lo contacto. */
+function cazHitoActual(p){
+  let ultimo=null;
+  CAZ_HITOS.forEach(h=>{if(p[h.clave])ultimo=h});
+  return ultimo;
+}
+
+/** La etapa del kanban mas avanzada entre los hitos alcanzados: nunca retrocede. */
+function cazEtapaDerivada(p){
+  let idx=etapaIdx[p.etapa]??0;
+  CAZ_HITOS.forEach(h=>{
+    if(p[h.clave])idx=Math.max(idx,etapaIdx[h.etapa]??0);
+  });
+  return etapas[idx];
+}
+
+// Todo lo que trajo el agente, tenga mensaje escrito o no: los que estan esperando
+// redaccion se ven igual, con el estado "Falta M1", para que el inventario sea visible.
+function cazTodos(){
+  return prospectsCache.filter(p=>p.fuente==='apify_ig'||p.fuente==='apify_linkedin'||p.m1);
+}
+
+const cazFaltaM1=p=>!p.m1||!p.m1.trim();
+
+function getCazadorData(){
+  const seg=document.getElementById('caz-seg-filter').value;
+  const red=document.getElementById('caz-red-filter').value;
+  const estado=document.getElementById('caz-estado-filter').value;
+  return cazTodos()
+    .filter(p=>{
+      if(seg&&p.segmento!==seg)return false;
+      if(red&&p.social!==red)return false;
+      if(estado==='descartados')return !!p.descartado;
+      if(p.descartado)return false;
+      if(estado==='todos')return true;
+      if(estado==='activos')return !p.registrado_at;
+      if(estado==='falta_m1')return cazFaltaM1(p);
+      if(estado==='sin_contactar')return !p.m1_enviado_at&&!cazFaltaM1(p);
+      const hito=CAZ_HITOS.find(h=>h.id===estado);
+      return hito?!!p[hito.clave]:true;
+    })
+    .sort((a,b)=>(b.score||0)-(a.score||0));
+}
+
+function cazFiltrarPor(estado){
+  document.getElementById('caz-estado-filter').value=estado;
+  renderCazador();
+}
+
+function renderEmbudo(){
+  const cont=document.getElementById('caz-embudo');
+  if(!cont)return;
+  const vivos=cazTodos().filter(p=>!p.descartado);
+  const total=vivos.length;
+
+  const pasos=[
+    {id:'falta_m1',lbl:'Falta M1',color:'#f97316',n:vivos.filter(cazFaltaM1).length},
+    {id:'sin_contactar',lbl:'Sin contactar',color:'var(--t3)',n:vivos.filter(p=>!p.m1_enviado_at&&!cazFaltaM1(p)).length},
+    ...CAZ_HITOS.map(h=>({id:h.id,lbl:h.estado,color:h.color,n:vivos.filter(p=>p[h.clave]).length}))
+  ];
+
+  cont.innerHTML=pasos.map(s=>{
+    // Conversion sobre el total de leads traidos: donde se cae el embudo
+    const pct=total?Math.round((s.n/total)*100):0;
+    return `<div class="caz-sc" style="--csc-c:${s.color};cursor:pointer" onclick="cazFiltrarPor('${s.id}')" title="Ver solo estos">
+      <div class="caz-sc-lbl">${s.lbl}</div>
+      <div class="caz-sc-val">${s.n}</div>
+      <div class="caz-sc-pct">${pct}% del total</div>
+    </div>`;
+  }).join('');
+}
+
+function renderCazador(){
+  const lista=document.getElementById('caz-list');
+  const vacio=document.getElementById('caz-empty');
+  if(!lista)return;
+
+  renderEmbudo();
+
+  const filas=getCazadorData();
+  lista.innerHTML='';
+  vacio.style.display=filas.length?'none':'block';
+
+  filas.forEach(p=>{
+    const sc=segColor[p.segmento];
+    const hito=cazHitoActual(p);
+    const score=p.score||0;
+    const colorScore=score>=75?'var(--accent)':score>=55?'var(--amber)':'var(--t3)';
+    const seguidores=p.seguidores?`${Number(p.seguidores).toLocaleString('es')} seguidores · `:'';
+    const cerrado=!!p.registrado_at;
+
+    // Botones: el siguiente hito sin marcar va destacado, los demas quedan disponibles
+    // por si el lead se salta pasos (agenda sin que le hayas mandado la oferta, por ejemplo).
+    const pendientes=CAZ_HITOS.filter(h=>!p[h.clave]);
+    const botonesHito=pendientes.map((h,i)=>
+      `<button class="${i===0?'btn-s':'btn-ghost'}" onclick="cazMarcarHito('${p.id}','${h.clave}')">${h.boton}</button>`
+    ).join('');
+
+    const card=document.createElement('div');
+    card.className='caz-card'+(p.descartado?' descartado':'')+(cerrado?' cerrado':'');
+    if(sc)card.style.setProperty('--caz-seg',sc.cssVar);
+    card.innerHTML=`
+      <div class="caz-top">
+        <div>
+          <div class="caz-name">${p.perfil_url?`<a href="${cazEsc(p.perfil_url)}" target="_blank" rel="noopener noreferrer">${cazEsc(p.nombre)}</a>`:cazEsc(p.nombre)}</div>
+          <div class="caz-sub">${cazEsc(p.handle||'')} · ${seguidores}${cazEsc(p.pais||'pais sin detectar')}</div>
+        </div>
+        <div class="caz-score" style="color:${colorScore}">${score}<small>score</small></div>
+      </div>
+
+      <div class="caz-ruta">${CAZ_HITOS.map(h=>{
+        const hecho=!!p[h.clave];
+        return `<span class="caz-paso${hecho?' hecho':''}" style="--paso-c:${h.color}" title="${hecho?new Date(p[h.clave]).toLocaleDateString('es'):'pendiente'}">${h.estado}</span>`;
+      }).join('<span class="caz-flecha">›</span>')}</div>
+
+      ${p.bio?`<div class="caz-bio">${cazEsc(p.bio)}</div>`:''}
+      ${cazFaltaM1(p)?`<div class="caz-msg caz-falta">
+        <div class="caz-msg-lbl">Sin mensaje todavia</div>
+        <div class="caz-msg-txt">Pedile al agente vt-leads que redacte el M1 de este lead antes de contactarlo.</div>
+      </div>`:`<div class="caz-msg">
+        <div class="caz-msg-lbl">Mensaje 1 — abrir conversacion (sin pitch)</div>
+        <div class="caz-msg-txt">${cazEsc(p.m1)}</div>
+      </div>`}
+      ${p.m2?`<div class="caz-msg caz-m2" id="caz-m2-${p.id}">
+        <div class="caz-msg-lbl">Mensaje 2 — solo si responde (guia, adaptar)</div>
+        <div class="caz-msg-txt">${cazEsc(p.m2)}</div>
+      </div>`:''}
+      <div class="caz-badges">
+        ${sc?`<span class="kb-tag seg-badge" style="background:${sc.bg};color:${sc.hex}">${cazEsc(p.segmento)}</span>`:''}
+        <span class="kb-tag seg-badge" style="background:rgba(148,163,184,.12);color:#94a3b8">${cazEsc(p.social||'')}</span>
+        ${hito?`<span class="kb-tag seg-badge" style="background:rgba(148,163,184,.12);color:${hito.color}">${hito.estado} · ${new Date(p[hito.clave]).toLocaleDateString('es')}</span>`
+              :cazFaltaM1(p)?`<span class="kb-tag seg-badge" style="background:rgba(249,115,22,.12);color:#f97316">Falta redactar M1</span>`
+              :`<span class="kb-tag seg-badge" style="background:rgba(148,163,184,.12);color:var(--t3)">Sin contactar</span>`}
+        ${p.descartado?`<span class="kb-tag seg-badge" style="background:rgba(148,163,184,.12);color:var(--t3)">Descartado</span>`:''}
+      </div>
+      <div class="caz-actions">
+        ${cazFaltaM1(p)?'':`<button class="btn-p" onclick="cazCopiar('${p.id}','m1',this)">Copiar M1</button>`}
+        ${p.m2?`<button class="btn-ghost" onclick="cazCopiar('${p.id}','m2',this)">Copiar M2</button>`:''}
+        ${p.descartado||cazFaltaM1(p)?'':botonesHito}
+        ${p.m2?`<button class="btn-ghost" onclick="cazVerM2('${p.id}',this)">Ver M2</button>`:''}
+        ${p.descartado?`<button class="btn-ghost" onclick="cazReactivar('${p.id}')">Reactivar</button>`
+                      :`<button class="btn-ghost" onclick="cazDescartar('${p.id}')">Descartar</button>`}
+      </div>`;
+    lista.appendChild(card);
+  });
+}
+
+function cazVerM2(id,btn){
+  const bloque=document.getElementById(`caz-m2-${id}`);
+  if(!bloque)return;
+  const visible=bloque.classList.toggle('on');
+  btn.textContent=visible?'Ocultar M2':'Ver M2';
+}
+
+async function cazCopiar(id,cual,btn){
+  const p=prospectsCache.find(x=>String(x.id)===String(id));
+  if(!p)return;
+  try{
+    await navigator.clipboard.writeText(cual==='m2'?(p.m2||''):(p.m1||''));
+    const orig=btn.textContent;
+    btn.textContent='Copiado';
+    setTimeout(()=>{btn.textContent=orig},1800);
+  }catch(e){
+    alert('No se pudo copiar. Selecciona el texto manualmente.');
+  }
+}
+
+/**
+ * Que campos hay que guardar al marcar un hito. Funcion pura: se puede probar sin base.
+ * La etapa se recalcula con el hito ya aplicado y nunca retrocede.
+ */
+function cazCambiosDeHito(p,clave,ahora){
+  const cambios={[clave]:ahora,updated_at:ahora};
+  const etapaNueva=cazEtapaDerivada({...p,[clave]:ahora});
+  if(etapaNueva!==p.etapa)cambios.etapa=etapaNueva;
+  if(clave==='respondio_at'){
+    cambios.prioridad='Alta';
+    cambios.secuencia_estado='respondio';
+  }
+  return cambios;
+}
+
+// Marca un hito del embudo, mueve el prospecto a la etapa que le toca y lo deja registrado.
+async function cazMarcarHito(id,clave){
+  const p=prospectsCache.find(x=>String(x.id)===String(id));
+  const hito=CAZ_HITOS.find(h=>h.clave===clave);
+  if(!p||!hito||p[clave])return;
+
+  const etapaPrevia=p.etapa;
+  const cambios=cazCambiosDeHito(p,clave,new Date().toISOString());
+  const etapaNueva=cambios.etapa||etapaPrevia;
+
+  const{error}=await db.from('prospects').update(cambios).eq('id',id);
+  if(error){alert('No se pudo actualizar: '+error.message);return;}
+
+  Object.assign(p,cambios);
+  cazMoverTarjeta(id,etapaNueva,etapaPrevia);
+  await cazRegistrarActividad(p.id,hito.nota(p));
+
+  renderCazador();
+  updateDashboard();
+}
+
+async function cazDescartar(id){
+  const p=prospectsCache.find(x=>String(x.id)===String(id));
+  if(!p)return;
+  if(!confirm(`Descartar a ${p.nombre}? Sale de la cola pero queda en el CRM.`))return;
+  const{error}=await db.from('prospects')
+    .update({descartado:true,updated_at:new Date().toISOString()})
+    .eq('id',id);
+  if(error){alert('No se pudo descartar: '+error.message);return;}
+  p.descartado=true;
+  renderCazador();
+}
+
+async function cazReactivar(id){
+  const p=prospectsCache.find(x=>String(x.id)===String(id));
+  if(!p)return;
+  const{error}=await db.from('prospects')
+    .update({descartado:false,updated_at:new Date().toISOString()})
+    .eq('id',id);
+  if(error){alert('No se pudo reactivar: '+error.message);return;}
+  p.descartado=false;
+  renderCazador();
+}
+
+// El historial es complementario: si el insert falla, la accion principal ya quedo guardada.
+async function cazRegistrarActividad(prospectId,contenido){
+  const{error}=await db.from('activities').insert({prospect_id:prospectId,tipo:'nota',contenido});
+  if(error)console.warn('No se pudo registrar la actividad:',error.message);
+}
+
+// Mueve la tarjeta del kanban a la columna que corresponde a su nueva etapa.
+function cazMoverTarjeta(id,etapaNueva,etapaPrevia){
+  if(etapaNueva===etapaPrevia)return;
+  const card=document.querySelector(`.kcard[data-id="${id}"]`);
+  const col=document.getElementById(`col-${etapaIdx[etapaNueva]??0}`);
+  if(card&&col)col.appendChild(card);
+  updateCnts();
+}
+
 // ── CORREOS section ───────────────────────────────────────
 let selectedEmails = new Set(); // Set of prospect ids selected
 
@@ -1391,7 +1756,8 @@ function renderCorreosTable(){
       <td>${p.email}</td>
       <td>${sc?`<span class="seg-badge" style="${badgeStyle}">${p.segmento}</span>`:(p.segmento||'—')}</td>
       <td>${p.etapa||'—'}</td>
-      <td>${p.pais||'—'}</td>`;
+      <td>${p.pais||'—'}</td>
+      <td>${p.segmento==='Introducing Brokers'?`<button class="reun-act-btn" data-ibp-btn="${p.id}" onclick="sendIBProposal('${p.id}')" ${p.propuesta_enviada?'disabled':''} style="${p.propuesta_enviada?'color:var(--accent);font-weight:700':''}">${p.propuesta_enviada?'✓ Propuesta enviada':'Enviar propuesta'}</button>`:'—'}</td>`;
     tbody.appendChild(tr);
   });
   updateCorreosSelBar();
@@ -1713,8 +2079,12 @@ document.getElementById('auth-form').addEventListener('submit',async e=>{
   const err=document.getElementById('auth-error');
   err.style.display='none';
   btn.disabled=true;
+  // El campo acepta el usuario a secas ("elticocr") o el correo completo: si no trae
+  // arroba se le agrega el dominio interno, igual que hace el modal de la landing.
+  const ingresado=document.getElementById('auth-email').value.trim().toLowerCase();
+  const email=ingresado.includes('@')?ingresado:`${ingresado}@elticofx.com`;
   const{error}=await db.auth.signInWithPassword({
-    email:document.getElementById('auth-email').value.trim(),
+    email,
     password:document.getElementById('auth-pass').value
   });
   btn.disabled=false;
