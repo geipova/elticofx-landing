@@ -23,7 +23,7 @@
   --bg: #070910;
   --bg-card: #0e1117;
   --bg-surf: #131820;
-  --accent: #00d4aa;
+  --accent: #C2ECE2;
   --blue: #0ea5e9;
   --amber: #f59e0b;
   --pink: #ec4899;
@@ -124,7 +124,7 @@ img {
 .btn-primary:hover {
   background: #00e8bb;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 212, 170, 0.3);
+  box-shadow: 0 8px 24px rgba(194, 236, 226, 0.3);
 }
 
 .btn-outline {
@@ -157,9 +157,9 @@ img {
   height: 2px;
   background: linear-gradient(90deg,
       transparent 0%,
-      rgba(0, 212, 170, 0.5) 30%,
-      #00D4AA 50%,
-      rgba(0, 212, 170, 0.5) 70%,
+      rgba(194, 236, 226, 0.5) 30%,
+      #C2ECE2 50%,
+      rgba(194, 236, 226, 0.5) 70%,
       transparent 100%);
 }
 
@@ -168,7 +168,7 @@ img {
   background: rgba(7, 9, 16, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0, 212, 170, 0.08);
+  border-bottom: 1px solid rgba(194, 236, 226, 0.08);
 }
 
 .navbar__inner {
@@ -252,7 +252,7 @@ img {
   flex-direction: column;
   background: rgba(7, 9, 16, 0.97);
   backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(0, 212, 170, 0.08);
+  border-top: 1px solid rgba(194, 236, 226, 0.08);
 }
 
 .navbar__mobile.open {
@@ -388,7 +388,7 @@ img {
 }
 
 .blog-card:hover {
-  border-color: rgba(0, 212, 170, 0.3);
+  border-color: rgba(194, 236, 226, 0.3);
   border-top-color: var(--accent);
   transform: translateY(-3px);
 }
@@ -549,7 +549,7 @@ img {
 
 .post-cta__box {
   background: var(--bg-card);
-  border: 1px solid rgba(0, 212, 170, 0.2);
+  border: 1px solid rgba(194, 236, 226, 0.2);
   border-radius: var(--radius-lg);
   padding: 32px;
   text-align: center;

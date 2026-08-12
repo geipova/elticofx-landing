@@ -12,7 +12,10 @@
   <title>El Tico FX | Broker Regulado ASIC para LATAM · Geiner Porras</title>
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
   <!-- Canonical -->
@@ -63,6 +66,13 @@
         "@id": "https://elticofx.com/#organization",
         "name": "El Tico FX",
         "url": "https://elticofx.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://elticofx.com/logo-buscador.png",
+          "width": 1200,
+          "height": 400
+        },
+        "image": "https://elticofx.com/logo-buscador.png",
         "description": "Representante autorizado de VT Markets para Latinoamérica. Broker regulado por ASIC N°406684 con protección Lloyd's of London hasta USD $1,000,000.",
         "areaServed": [
           { "@type": "Country", "name": "Colombia" },
@@ -171,7 +181,7 @@
       --bg: #070910;
       --bg-card: #0e1117;
       --bg-surf: #131820;
-      --accent: #00d4aa;
+      --accent: #C2ECE2;
       --blue: #0ea5e9;
       --amber: #f59e0b;
       --pink: #ec4899;
@@ -296,7 +306,7 @@
     .btn-primary:hover {
       background: #00e8bb;
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0, 212, 170, 0.3);
+      box-shadow: 0 8px 24px rgba(194, 236, 226, 0.3);
     }
 
     .btn-outline {
@@ -376,9 +386,9 @@
       height: 2px;
       background: linear-gradient(90deg,
           transparent 0%,
-          rgba(0, 212, 170, 0.5) 30%,
-          #00D4AA 50%,
-          rgba(0, 212, 170, 0.5) 70%,
+          rgba(194, 236, 226, 0.5) 30%,
+          #C2ECE2 50%,
+          rgba(194, 236, 226, 0.5) 70%,
           transparent 100%);
     }
 
@@ -392,7 +402,7 @@
       background: rgba(7, 9, 16, 0.88);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(0, 212, 170, 0.08);
+      border-bottom: 1px solid rgba(194, 236, 226, 0.08);
     }
 
     .navbar__inner {
@@ -475,7 +485,7 @@
     }
 
     .navbar__links a.nav-crm-link {
-      color: rgba(0, 212, 170, 0.7);
+      color: rgba(194, 236, 226, 0.7);
       font-weight: 600;
     }
 
@@ -521,7 +531,7 @@
       flex-direction: column;
       background: rgba(7, 9, 16, 0.97);
       backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(0, 212, 170, 0.08);
+      border-top: 1px solid rgba(194, 236, 226, 0.08);
     }
 
     .navbar__mobile.open {
@@ -563,7 +573,7 @@
       transform: translateX(-50%);
       width: 1200px;
       height: 1200px;
-      background: radial-gradient(ellipse at center, rgba(0, 212, 170, 0.09) 0%, transparent 65%);
+      background: radial-gradient(ellipse at center, rgba(194, 236, 226, 0.09) 0%, transparent 65%);
       pointer-events: none;
     }
 
@@ -581,8 +591,8 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(0, 212, 170, 0.08);
-      border: 1px solid rgba(0, 212, 170, 0.2);
+      background: rgba(194, 236, 226, 0.08);
+      border: 1px solid rgba(194, 236, 226, 0.2);
       border-radius: 100px;
       padding: 8px 20px;
       margin-bottom: 44px;
@@ -646,7 +656,7 @@
       top: 0;
       left: 0;
       right: 0;
-      color: #00d4aa;
+      color: #C2ECE2;
       font-weight: 700;
       opacity: 0;
       transform: translateY(100%);
@@ -749,13 +759,13 @@
 
     .trust__card:hover {
       transform: translateY(-4px);
-      border-color: rgba(0, 212, 170, 0.2);
+      border-color: rgba(194, 236, 226, 0.2);
     }
 
     .trust__icon {
       width: 48px;
       height: 48px;
-      background: rgba(0, 212, 170, 0.1);
+      background: rgba(194, 236, 226, 0.1);
       border-radius: 12px;
       display: flex;
       align-items: center;
@@ -991,7 +1001,7 @@
     }
 
     .payment-card:hover {
-      border-color: rgba(0, 212, 170, 0.25);
+      border-color: rgba(194, 236, 226, 0.25);
       transform: translateY(-4px);
     }
 
@@ -1027,7 +1037,7 @@
 
     .payments__note {
       background: var(--bg-card);
-      border: 1px solid rgba(0, 212, 170, 0.15);
+      border: 1px solid rgba(194, 236, 226, 0.15);
       border-radius: var(--radius);
       padding: 18px 24px;
       display: flex;
@@ -1312,7 +1322,7 @@
     .newsletter-form button:hover {
       background: #00e8bb;
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0, 212, 170, 0.3);
+      box-shadow: 0 8px 24px rgba(194, 236, 226, 0.3);
     }
 
     .newsletter-note {
@@ -1417,7 +1427,7 @@
       flex-shrink: 0;
       background: transparent;
       color: var(--accent);
-      border: 1px solid rgba(0, 212, 170, 0.35);
+      border: 1px solid rgba(194, 236, 226, 0.35);
       border-radius: 8px;
       padding: 9px 16px;
       font-family: 'DM Sans', sans-serif;
@@ -1797,8 +1807,8 @@
       width: 100%;
       max-width: 380px;
       border-radius: 16px;
-      border: 2px solid rgba(0, 212, 170, 0.25);
-      box-shadow: 0 0 40px rgba(0, 212, 170, 0.15);
+      border: 2px solid rgba(194, 236, 226, 0.25);
+      box-shadow: 0 0 40px rgba(194, 236, 226, 0.15);
       display: block;
     }
 
@@ -1832,8 +1842,8 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(0, 212, 170, 0.08);
-      border: 1px solid rgba(0, 212, 170, 0.2);
+      background: rgba(194, 236, 226, 0.08);
+      border: 1px solid rgba(194, 236, 226, 0.2);
       border-radius: 100px;
       padding: 4px 14px;
       font-size: 12px;
@@ -1932,7 +1942,7 @@
       border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 20px;
       padding: 48px 40px;
-      box-shadow: 0 0 60px rgba(0, 212, 170, 0.05);
+      box-shadow: 0 0 60px rgba(194, 236, 226, 0.05);
     }
 
     .login-header {
@@ -1943,8 +1953,8 @@
     .login-icon {
       width: 56px;
       height: 56px;
-      background: rgba(0, 212, 170, 0.08);
-      border: 1px solid rgba(0, 212, 170, 0.2);
+      background: rgba(194, 236, 226, 0.08);
+      border: 1px solid rgba(194, 236, 226, 0.2);
       border-radius: 14px;
       display: flex;
       align-items: center;
@@ -2078,7 +2088,7 @@
     }
 
     .nav-crm-link:hover {
-      background: rgba(0, 212, 170, 0.08) !important;
+      background: rgba(194, 236, 226, 0.08) !important;
       color: var(--accent) !important;
     }
 
@@ -2203,8 +2213,8 @@
       height: 60px;
       border-radius: 50%;
       overflow: hidden;
-      border: 2px solid rgba(0, 212, 170, 0.35);
-      box-shadow: 0 0 16px rgba(0, 212, 170, 0.15);
+      border: 2px solid rgba(194, 236, 226, 0.35);
+      box-shadow: 0 0 16px rgba(194, 236, 226, 0.15);
       /* counter-rotation para que el avatar quede upright */
       animation: orbitCounterSpin 22s linear infinite, orbitFloat 3s ease-in-out infinite;
     }
@@ -2265,12 +2275,12 @@
 
       0%,
       100% {
-        box-shadow: 0 0 16px rgba(0, 212, 170, 0.15);
+        box-shadow: 0 0 16px rgba(194, 236, 226, 0.15);
         margin-top: 0;
       }
 
       50% {
-        box-shadow: 0 4px 20px rgba(0, 212, 170, 0.28);
+        box-shadow: 0 4px 20px rgba(194, 236, 226, 0.28);
         margin-top: -5px;
       }
     }
@@ -2456,7 +2466,7 @@
     }
 
     .ec-card:hover {
-      border-color: rgba(0, 212, 170, 0.3);
+      border-color: rgba(194, 236, 226, 0.3);
       transform: translateY(-2px);
     }
 
@@ -2759,9 +2769,9 @@
     }
 
     .bc-nav__btn:hover:not(:disabled) {
-      border-color: #00d4aa;
-      color: #00d4aa;
-      background: rgba(0, 212, 170, 0.06);
+      border-color: #C2ECE2;
+      color: #C2ECE2;
+      background: rgba(194, 236, 226, 0.06);
     }
 
     .bc-nav__btn:disabled {
@@ -2834,11 +2844,11 @@
       width: 4px;
       height: 4px;
       border-radius: 50%;
-      background: #00d4aa;
+      background: #C2ECE2;
     }
 
     .bc-day--selected {
-      background: #00d4aa;
+      background: #C2ECE2;
       color: #070910;
       font-weight: 700;
     }
@@ -2897,13 +2907,13 @@
     }
 
     .bs-slot:hover:not(.bs-slot--selected) {
-      border-color: #00d4aa;
+      border-color: #C2ECE2;
       color: #f0f4f8;
     }
 
     .bs-slot--selected {
-      background: #00d4aa;
-      border-color: #00d4aa;
+      background: #C2ECE2;
+      border-color: #C2ECE2;
       color: #070910;
       font-weight: 700;
     }
@@ -2919,9 +2929,9 @@
       cursor: not-allowed;
       pointer-events: none;
       text-decoration: line-through;
-      color: #00d4aa;
-      border-color: rgba(0, 212, 170, 0.25);
-      background: rgba(0, 212, 170, 0.06);
+      color: #C2ECE2;
+      border-color: rgba(194, 236, 226, 0.25);
+      background: rgba(194, 236, 226, 0.06);
     }
 
     .bs-slot--loading {
@@ -2960,7 +2970,7 @@
 
     .booking-confirm-info svg {
       flex-shrink: 0;
-      color: #00d4aa;
+      color: #C2ECE2;
     }
 
     .booking-confirm-info span {
@@ -2977,7 +2987,7 @@
     #booking-btn {
       flex-shrink: 0;
       padding: 12px 24px;
-      background: #00d4aa;
+      background: #C2ECE2;
       color: #070910;
       border: none;
       border-radius: 10px;
@@ -2991,7 +3001,7 @@
     #booking-btn:not(:disabled):hover {
       background: #00e8bb;
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 212, 170, 0.28);
+      box-shadow: 0 6px 20px rgba(194, 236, 226, 0.28);
     }
 
     #booking-btn:disabled {
@@ -3240,7 +3250,7 @@
         Abrir cuenta demo
       </a>
       <a href="#" role="menuitem" id="open-login-modal-mobile"
-        style="color:var(--accent);font-weight:600;border-top:1px solid rgba(0,212,170,0.15);">
+        style="color:var(--accent);font-weight:600;border-top:1px solid rgba(194,236,226,0.15);">
         Acceso CRM
       </a>
     </div>
@@ -4010,7 +4020,7 @@
       <!-- Step 1: form -->
       <div id="bm-form-step">
         <p
-          style="color:#00d4aa;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin:0 0 10px">
+          style="color:#C2ECE2;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin:0 0 10px">
           Confirmar reserva</p>
         <h3
           style="font-family:'Cuaniex Trial','DM Sans',sans-serif;font-size:20px;font-weight:800;color:#f0f4f8;margin:0 0 4px"
@@ -4024,7 +4034,7 @@
               nombre</label>
             <input id="bm-name" type="text" placeholder="Ej: Carlos Méndez" required autocomplete="given-name"
               style="width:100%;background:#131820;border:1px solid #1a2130;border-radius:10px;padding:12px 14px;color:#f0f4f8;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.2s"
-              onfocus="this.style.borderColor='#00d4aa'" onblur="this.style.borderColor='#1a2130'" />
+              onfocus="this.style.borderColor='#C2ECE2'" onblur="this.style.borderColor='#1a2130'" />
           </div>
           <div style="margin-bottom:24px">
             <label for="bm-email"
@@ -4032,7 +4042,7 @@
               correo</label>
             <input id="bm-email" type="email" placeholder="tu@correo.com" required autocomplete="email"
               style="width:100%;background:#131820;border:1px solid #1a2130;border-radius:10px;padding:12px 14px;color:#f0f4f8;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.2s"
-              onfocus="this.style.borderColor='#00d4aa'" onblur="this.style.borderColor='#1a2130'" />
+              onfocus="this.style.borderColor='#C2ECE2'" onblur="this.style.borderColor='#1a2130'" />
             <p style="color:#475569;font-size:12px;margin:6px 0 0">Recibirás la confirmación y el link de Zoom aquí.</p>
           </div>
           <div style="margin-bottom:24px">
@@ -4040,12 +4050,12 @@
               style="display:block;font-size:12px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">WhatsApp</label>
             <input id="bm-phone" type="tel" placeholder="Ej: +506 6010 3635" autocomplete="tel"
               style="width:100%;background:#131820;border:1px solid #1a2130;border-radius:10px;padding:12px 14px;color:#f0f4f8;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.2s"
-              onfocus="this.style.borderColor='#00d4aa'" onblur="this.style.borderColor='#1a2130'" />
+              onfocus="this.style.borderColor='#C2ECE2'" onblur="this.style.borderColor='#1a2130'" />
             <p style="color:#475569;font-size:12px;margin:6px 0 0">Para confirmar la reunión por WhatsApp.</p>
           </div>
           <p id="bm-error" style="display:none;color:#ef4444;font-size:13px;margin:0 0 14px"></p>
           <button type="submit" id="bm-submit"
-            style="width:100%;background:#00d4aa;color:#070910;font-family:'Cuaniex Trial','DM Sans',sans-serif;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:14px;cursor:pointer;transition:opacity 0.2s">
+            style="width:100%;background:#C2ECE2;color:#070910;font-family:'Cuaniex Trial','DM Sans',sans-serif;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:14px;cursor:pointer;transition:opacity 0.2s">
             Confirmar y agendar
           </button>
         </form>
@@ -4054,8 +4064,8 @@
       <!-- Step 2: success -->
       <div id="bm-success-step" style="display:none;text-align:center;padding:10px 0">
         <div
-          style="width:56px;height:56px;background:rgba(0,212,170,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="2.5"
+          style="width:56px;height:56px;background:rgba(194,236,226,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C2ECE2" stroke-width="2.5"
             stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12" />
           </svg>
@@ -4065,7 +4075,7 @@
           &#161;Reuni&oacute;n confirmada!</h3>
         <p style="color:#94a3b8;font-size:14px;margin:0 0 20px" id="bm-success-msg"></p>
         <a id="bm-listo-btn" href="#" target="_blank" rel="noopener"
-          style="display:inline-block;background:#00d4aa;color:#070910;font-family:'Cuaniex Trial','DM Sans',sans-serif;font-weight:700;font-size:15px;padding:14px 32px;border-radius:10px;text-decoration:none;margin-top:4px">
+          style="display:inline-block;background:#C2ECE2;color:#070910;font-family:'Cuaniex Trial','DM Sans',sans-serif;font-weight:700;font-size:15px;padding:14px 32px;border-radius:10px;text-decoration:none;margin-top:4px">
           Listo &rarr;
         </a>
       </div>
@@ -4087,7 +4097,7 @@
       <!-- Step 1: form -->
       <div id="lm-form-step">
         <p id="lm-eyebrow"
-          style="color:#00d4aa;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin:0 0 10px">
+          style="color:#C2ECE2;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin:0 0 10px">
         </p>
         <h3 id="lm-title"
           style="font-family:'Cuaniex Trial','DM Sans',sans-serif;font-size:22px;font-weight:800;color:#f0f4f8;margin:0 0 10px;line-height:1.25">
@@ -4103,7 +4113,7 @@
               nombre</label>
             <input id="lm-name" type="text" placeholder="Ej: Carlos Méndez" required autocomplete="name"
               style="width:100%;background:#131820;border:1px solid #1a2130;border-radius:10px;padding:12px 14px;color:#f0f4f8;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.2s"
-              onfocus="this.style.borderColor='#00d4aa'" onblur="this.style.borderColor='#1a2130'" />
+              onfocus="this.style.borderColor='#C2ECE2'" onblur="this.style.borderColor='#1a2130'" />
           </div>
           <div style="margin-bottom:14px">
             <label for="lm-email"
@@ -4111,7 +4121,7 @@
               correo</label>
             <input id="lm-email" type="email" placeholder="tu@correo.com" required autocomplete="email"
               style="width:100%;background:#131820;border:1px solid #1a2130;border-radius:10px;padding:12px 14px;color:#f0f4f8;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.2s"
-              onfocus="this.style.borderColor='#00d4aa'" onblur="this.style.borderColor='#1a2130'" />
+              onfocus="this.style.borderColor='#C2ECE2'" onblur="this.style.borderColor='#1a2130'" />
           </div>
           <div style="display:flex;gap:12px;margin-bottom:14px">
             <div style="flex:1">
@@ -4120,7 +4130,7 @@
                 <span style="color:#475569;text-transform:none;letter-spacing:0">(opcional)</span></label>
               <input id="lm-phone" type="tel" placeholder="+506 ..." autocomplete="tel"
                 style="width:100%;background:#131820;border:1px solid #1a2130;border-radius:10px;padding:12px 14px;color:#f0f4f8;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.2s"
-                onfocus="this.style.borderColor='#00d4aa'" onblur="this.style.borderColor='#1a2130'" />
+                onfocus="this.style.borderColor='#C2ECE2'" onblur="this.style.borderColor='#1a2130'" />
             </div>
             <div style="flex:1">
               <label for="lm-pais"
@@ -4147,11 +4157,11 @@
               de vos <span style="color:#475569;text-transform:none;letter-spacing:0">(opcional)</span></label>
             <textarea id="lm-mensaje" rows="2" placeholder=""
               style="width:100%;background:#131820;border:1px solid #1a2130;border-radius:10px;padding:12px 14px;color:#f0f4f8;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;resize:vertical;transition:border-color 0.2s"
-              onfocus="this.style.borderColor='#00d4aa'" onblur="this.style.borderColor='#1a2130'"></textarea>
+              onfocus="this.style.borderColor='#C2ECE2'" onblur="this.style.borderColor='#1a2130'"></textarea>
           </div>
           <p id="lm-error" style="display:none;color:#ef4444;font-size:13px;margin:0 0 14px"></p>
           <button type="submit" id="lm-submit"
-            style="width:100%;background:#00d4aa;color:#070910;font-family:'Cuaniex Trial','DM Sans',sans-serif;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:14px;cursor:pointer;transition:opacity 0.2s">
+            style="width:100%;background:#C2ECE2;color:#070910;font-family:'Cuaniex Trial','DM Sans',sans-serif;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:14px;cursor:pointer;transition:opacity 0.2s">
             Quiero que me contacten
           </button>
           <p style="color:#475569;font-size:11.5px;margin:12px 0 0;text-align:center;line-height:1.5">
@@ -4164,8 +4174,8 @@
       <!-- Step 2: success -->
       <div id="lm-success-step" style="display:none;text-align:center;padding:10px 0">
         <div
-          style="width:56px;height:56px;background:rgba(0,212,170,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="2.5"
+          style="width:56px;height:56px;background:rgba(194,236,226,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C2ECE2" stroke-width="2.5"
             stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12" />
           </svg>
@@ -4177,7 +4187,7 @@
           Revis&aacute; tu correo en los pr&oacute;ximos minutos &mdash; te llega el primer email con la informaci&oacute;n de tu perfil.
         </p>
         <a href="#agendar" id="lm-success-cta"
-          style="display:inline-block;background:#00d4aa;color:#070910;font-family:'Cuaniex Trial','DM Sans',sans-serif;font-weight:700;font-size:15px;padding:14px 32px;border-radius:10px;text-decoration:none;margin-top:4px">
+          style="display:inline-block;background:#C2ECE2;color:#070910;font-family:'Cuaniex Trial','DM Sans',sans-serif;font-weight:700;font-size:15px;padding:14px 32px;border-radius:10px;text-decoration:none;margin-top:4px">
           &iquest;Preferís hablar ya? Agend&aacute; una reuni&oacute;n &rarr;
         </a>
       </div>
@@ -4195,7 +4205,7 @@
       <button id="dm-close" aria-label="Cerrar"
         style="position:absolute;top:16px;right:16px;background:none;border:none;color:#475569;font-size:22px;cursor:pointer;line-height:1">&times;</button>
 
-      <p style="color:#00d4aa;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin:0 0 10px">
+      <p style="color:#C2ECE2;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin:0 0 10px">
         Análisis diario
       </p>
       <h3 style="font-family:'Cuaniex Trial','DM Sans',sans-serif;font-size:22px;font-weight:800;color:#f0f4f8;margin:0 0 10px;line-height:1.25">
@@ -4214,7 +4224,7 @@
             nombre</label>
           <input id="dm-name" type="text" placeholder="Ej: Carlos Méndez" required autocomplete="name"
             style="width:100%;background:#131820;border:1px solid #1a2130;border-radius:10px;padding:12px 14px;color:#f0f4f8;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.2s"
-            onfocus="this.style.borderColor='#00d4aa'" onblur="this.style.borderColor='#1a2130'" />
+            onfocus="this.style.borderColor='#C2ECE2'" onblur="this.style.borderColor='#1a2130'" />
         </div>
         <div style="margin-bottom:20px">
           <label for="dm-email"
@@ -4222,11 +4232,11 @@
             correo</label>
           <input id="dm-email" type="email" placeholder="tu@correo.com" required autocomplete="email"
             style="width:100%;background:#131820;border:1px solid #1a2130;border-radius:10px;padding:12px 14px;color:#f0f4f8;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.2s"
-            onfocus="this.style.borderColor='#00d4aa'" onblur="this.style.borderColor='#1a2130'" />
+            onfocus="this.style.borderColor='#C2ECE2'" onblur="this.style.borderColor='#1a2130'" />
         </div>
         <p id="dm-error" style="display:none;color:#ef4444;font-size:13px;margin:0 0 14px"></p>
         <button type="submit" id="dm-submit"
-          style="width:100%;background:#00d4aa;color:#070910;font-family:'Cuaniex Trial','DM Sans',sans-serif;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:14px;cursor:pointer;transition:opacity 0.2s">
+          style="width:100%;background:#C2ECE2;color:#070910;font-family:'Cuaniex Trial','DM Sans',sans-serif;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:14px;cursor:pointer;transition:opacity 0.2s">
           Descargar PDF
         </button>
         <p style="color:#475569;font-size:11.5px;margin:12px 0 0;text-align:center;line-height:1.5">
@@ -4350,7 +4360,7 @@
         cfg.bullets.forEach(function (b) {
           var li = document.createElement('li');
           li.style.cssText = 'color:#94a3b8;font-size:13.5px;padding:5px 0 5px 24px;position:relative;line-height:1.45';
-          li.innerHTML = '<span style="position:absolute;left:0;color:#00d4aa;font-weight:700">✓</span>' + b;
+          li.innerHTML = '<span style="position:absolute;left:0;color:#C2ECE2;font-weight:700">✓</span>' + b;
           ul.appendChild(li);
         });
         formStep.style.display = 'block';
@@ -5712,7 +5722,7 @@
       max-width: 400px;
       margin: 16px;
       text-align: center;
-      box-shadow: 0 0 60px rgba(0, 212, 170, 0.08);
+      box-shadow: 0 0 60px rgba(194, 236, 226, 0.08);
       animation: lm-in 0.22s ease;
     }
 
@@ -5750,8 +5760,8 @@
     .lm-icon {
       width: 52px;
       height: 52px;
-      background: rgba(0, 212, 170, 0.08);
-      border: 1px solid rgba(0, 212, 170, 0.2);
+      background: rgba(194, 236, 226, 0.08);
+      border: 1px solid rgba(194, 236, 226, 0.2);
       border-radius: 14px;
       display: flex;
       align-items: center;
